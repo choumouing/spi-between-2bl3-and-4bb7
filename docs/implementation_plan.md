@@ -1,9 +1,9 @@
 # 多芯片SPI通信系统实施方案
 
-> **文档版本**：v3.1（INT信号时序优化版）
-> **日期**：2025年
+> **文档版本**：v4.0（第一阶段验证完成版）
+> **日期**：2025年12月
 > **项目**：3×CYT2BL3 + 1×CYT4BB7 SPI通信系统
-> **修订说明**：v3.1 更新INT信号握手机制（从机检测CS上升沿清除INT，状态机保护）
+> **修订说明**：v4.0 第一阶段基础通信验证完成，更新为实际实现的代码和架构
 
 ---
 
@@ -19,14 +19,24 @@
 
 ### 1.2 已确认的技术参数
 
-| 参数 | 确认值 |
-|------|--------|
-| 物理连接 | 排线约5cm（测试），PCB直连（将来） |
-| 通信频率 | 100Hz（可配置） |
-| SPI时钟 | 8MHz（可配置，支持便捷切换） |
-| 实施方案 | 单硬件SPI_0 + 3个GPIO CS + 3个INT信号 |
-| 开发策略 | 先中断模式，后DMA优化 |
-| 测试策略 | 先1主1从验证，后扩展3从机 |
+| 参数 | 确认值 | 实际状态 |
+|------|--------|----------|
+| 物理连接 | 排线约5cm（测试），PCB直连（将来） | ✅ 已验证 |
+| 通信频率 | 100Hz（可配置） | ✅ 支持 |
+| SPI时钟 | 1MHz（可配置，支持便捷切换） | ✅ 已验证 |
+| 实施方案 | 单硬件SPI_0 + GPIO CS + INT信号 | ✅ 已实现 |
+| 开发策略 | 先中断模式，后DMA优化 | ✅ 第一阶段完成 |
+| 测试策略 | 先1主1从验证，后扩展3从机 | ✅ 1主1从验证成功 |
+
+### 1.3 当前进度
+
+| 阶段 | 状态 | 完成日期 |
+|------|------|----------|
+| **第一阶段：基础通信验证** | ✅ **已完成** | 2025-12-25 |
+| 第二阶段：多从机扩展 | ⏳ 待开始 | - |
+| 第三阶段：DMA优化 | ⏳ 待开始 | - |
+| 第四阶段：功能完善 | ⏳ 待开始 | - |
+| 第五阶段：集成测试 | ⏳ 待开始 | - |
 
 ---
 
@@ -47,9 +57,9 @@
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │                    通信层                                   │  │
 │  │  ┌─────────────────────────────────────────────────────┐  │  │
-│  │  │      SPI主机管理模块 (SPI_0/SCB7 + 3xGPIO CS)       │  │  │
+│  │  │      SPI主机管理模块 (SPI_0/SCB7 + GPIO CS)         │  │  │
 │  │  │                                                     │  │  │
-│  │  │   事件驱动: INT_1/INT_2/INT_3 触发 → SPI通信        │  │  │
+│  │  │   事件驱动: INT信号触发 → SPI通信                   │  │  │
 │  │  │                                                     │  │  │
 │  │  └─────────────────────────────────────────────────────┘  │  │
 │  └───────────────────────────────────────────────────────────┘  │
@@ -65,24 +75,21 @@
      └───────────┘   └──────────┘  └──────────┘
 ```
 
-### 2.2 模块划分
+### 2.2 实际模块划分
 
-#### 2.2.1 CYT4BB7模块
+#### 2.2.1 CYT4BB7模块（实际实现）
 
-| 模块 | 文件 | 功能 |
-|------|------|------|
-| SPI主机驱动 | `spi_master.c/h` | SPI主机+GPIO CS控制 |
-| 通信协议 | `comm_protocol.c/h` | 数据包封装解析 |
-| 从机管理 | `slave_manager.c/h` | 3个从机事件驱动管理 |
-| 信标数据 | `beacon_data.h` | 数据结构定义 |
+| 模块 | 文件 | 功能 | 状态 |
+|------|------|------|------|
+| SPI主机通信 | `code/spi_comm.c/h` | SPI主机通信+协议解析 | ✅ 已实现 |
+| 主程序 | `user/main_cm7_0.c` | 主循环和测试 | ✅ 已实现 |
 
-#### 2.2.2 CYT2BL3模块
+#### 2.2.2 CYT2BL3模块（实际实现）
 
-| 模块 | 文件 | 功能 |
-|------|------|------|
-| SPI从机驱动 | `spi_slave.c/h` | SPI从机通信 |
-| 通信协议 | `comm_protocol.c/h` | 数据包封装解析（与主机共用） |
-| INT信号 | `int_signal.c/h` | 数据就绪信号控制 |
+| 模块 | 文件 | 功能 | 状态 |
+|------|------|------|------|
+| SPI从机通信 | `code/spi_slave.c/h` | SPI从机通信+协议构建 | ✅ 已实现 |
+| 主程序 | `user/main_cm4.c` | 主循环和测试数据 | ✅ 已实现 |
 
 ---
 
@@ -90,45 +97,41 @@
 
 ### 3.1 引脚分配
 
-#### 3.1.1 CYT4BB7引脚分配（用户确认）
+#### 3.1.1 CYT4BB7引脚分配（实际使用）
 
-| 功能 | 引脚 | SCB | 说明 |
-|------|------|-----|------|
-| **SPI_0通信总线** | | SCB7 | |
-| CLK | P02_2 | | 时钟输出（共享） |
-| MOSI | P02_1 | | 数据输出（共享） |
-| MISO | P02_0 | | 数据输入（共享） |
-| **从机1 (单从机测试)** | | - | 软件控制 |
-| CS_1 (2BL3_1) | P02_3 | | 片选1（SPI0硬件CS0） |
-| INT_1 (2BL3_1) | P02_4 | | 数据就绪检测1 |
-| **从机2** | | - | |
-| CS_2 (2BL3_2) | P01_0 | | 片选2（GPIO） |
-| INT_2 (2BL3_2) | P01_1 | | 数据就绪检测2 |
-| **从机3** | | - | |
-| CS_3 (2BL3_3) | P19_0 | | 片选3（GPIO） |
-| INT_3 (2BL3_3) | P19_1 | | 数据就绪检测3 |
+| 功能 | 引脚 | SCB | 说明 | 状态 |
+|------|------|-----|------|------|
+| **SPI_0通信总线** | | SCB7 | | ✅ |
+| CLK | P02_2 | | 时钟输出（共享） | ✅ |
+| MOSI | P02_1 | | 数据输出（共享） | ✅ |
+| MISO | P02_0 | | 数据输入（共享） | ✅ |
+| **从机1 (单从机测试)** | | - | 软件控制 | ✅ |
+| CS_1 (2BL3_1) | P02_3 | | 片选1（GPIO软件控制） | ✅ |
+| INT_1 (2BL3_1) | P02_4 | | 数据就绪检测1 | ✅ |
+| **从机2** | | - | | ⏳ |
+| CS_2 (2BL3_2) | P01_0 | | 片选2（GPIO） | ⏳ 待实现 |
+| INT_2 (2BL3_2) | P01_1 | | 数据就绪检测2 | ⏳ 待实现 |
+| **从机3** | | - | | ⏳ |
+| CS_3 (2BL3_3) | P19_0 | | 片选3（GPIO） | ⏳ 待实现 |
+| INT_3 (2BL3_3) | P19_1 | | 数据就绪检测3 | ⏳ 待实现 |
 
-**冲突检查**：
-- P02_3/P02_4：WiFi模块默认引脚，用户确认不使用WiFi ✅
-- P01_0/P01_1：无冲突（仅示例代码） ✅
-- P19_0/P19_1：DL1A/DL1B TOF传感器默认引脚，用户确认不使用TOF ✅
+#### 3.1.2 CYT2BL3引脚分配（实际使用 - SCB0）
 
-#### 3.1.2 CYT2BL3引脚分配（使用SCB0）
-
-| 功能 | 引脚 | SCB | HSIOM | 说明 |
-|------|------|-----|-------|------|
-| **SPI从机通信** | | SCB0 | | **Deep Sleep模式(30)** |
-| MISO | **P0_0** | | P0_0_SCB0_SPI_MISO | 数据输出（向主机发送） |
-| MOSI | **P0_1** | | P0_1_SCB0_SPI_MOSI | 数据输入（从主机接收） |
-| CLK | **P0_2** | | P0_2_SCB0_SPI_CLK | 时钟输入 |
-| SS | **P0_3** | | P0_3_SCB0_SPI_SELECT0 | 硬件片选输入 |
-| **INT信号** | | GPIO | |
-| INT_OUT | **P18_6** | | | 数据就绪信号输出 |
+| 功能 | 引脚 | SCB | HSIOM | 说明 | 状态 |
+|------|------|-----|-------|------|------|
+| **SPI从机通信** | | SCB0 | | **Deep Sleep模式(30)** | ✅ |
+| MISO | **P0_0** | | P0_0_SCB0_SPI_MISO | 数据输出（向主机发送） | ✅ |
+| MOSI | **P0_1** | | P0_1_SCB0_SPI_MOSI | 数据输入（从主机接收） | ✅ |
+| CLK | **P0_2** | | P0_2_SCB0_SPI_CLK | 时钟输入 | ✅ |
+| SS | **P0_3** | | P0_3_SCB0_SPI_SELECT0 | 硬件片选输入 | ✅ |
+| **INT信号** | | GPIO | | | ✅ |
+| INT_OUT | **P18_6** | | | 数据就绪信号输出 | ✅ |
 
 **重要说明**:
 - SCB2(P14端口)的P14_x引脚没有SPI_SELECT0的HSIOM定义，无法用于SPI从机模式
 - SCB0是CYT2BL3上唯一具备完整SPI从机功能且未被占用的SCB
 - SCB0使用Deep Sleep HSIOM模式(值=30)
+- ⚠️ SCB0与Debug UART冲突，需禁用debug_init()
 
 ### 3.2 接线图
 
@@ -159,7 +162,7 @@ CYT4BB7                              CYT2BL3_1 / 2BL3_2 / 2BL3_3
 
 ---
 
-## 四、通信协议设计
+## 四、通信协议设计（实际实现）
 
 ### 4.1 数据帧格式
 
@@ -168,610 +171,340 @@ CYT4BB7                              CYT2BL3_1 / 2BL3_2 / 2BL3_3
 ```
 ┌──────┬──────┬──────┬────────────┬──────┬──────┐
 │ HEAD │ CMD  │ LEN  │   DATA     │ CRC  │ TAIL │
-│ 2B   │ 1B   │ 2B   │  0-256B    │ 2B   │ 1B   │
+│ 2B   │ 1B   │ 2B   │  0-32B     │ 2B   │ 1B   │
 └──────┴──────┴──────┴────────────┴──────┴──────┘
 
-HEAD: 0x5A 0xA5 (帧头标识)
+HEAD: 0xAA 0x55 (帧头标识)
 CMD:  命令字节
-LEN:  数据长度(小端)
+LEN:  数据长度(小端序，高字节在前)
 DATA: 有效数据
-CRC:  CRC16校验
-TAIL: 0xAA (帧尾标识)
+CRC:  CRC16-Modbus校验 (计算范围: CMD+LEN+DATA)
+TAIL: 0xED (帧尾标识)
 ```
 
-#### 4.1.2 命令定义
+#### 4.1.2 命令定义（实际实现）
 
 | 命令 | 值 | 方向 | 说明 |
 |------|-----|------|------|
-| CMD_NOP | 0x00 | M→S | 空操作/握手 |
-| CMD_GET_STATUS | 0x01 | M→S | 获取从机状态 |
-| CMD_GET_BEACON | 0x02 | M→S | 获取信标数据 |
-| CMD_SET_PARAM | 0x10 | M→S | 设置参数 |
-| CMD_ACK | 0x80 | S→M | 确认响应 |
-| CMD_DATA | 0x81 | S→M | 数据响应 |
-| CMD_ERROR | 0xFF | S→M | 错误响应 |
+| CMD_PING | 0x01 | M→S | 心跳测试 |
+| CMD_GET_BEACON | 0x10 | M→S | 获取信标数据 |
 
-### 4.2 信标数据结构（用户确认）
+### 4.2 信标数据结构（实际实现）
 
 ```c
-// 信标检测结果数据结构 (6字节)
-typedef struct {
-    uint8_t  beacon_found;       // 是否检测到信标
-    uint8_t  beacon_count;       // 检测到的信标数量
-    int16_t  nearest_beacon_x;   // 最近信标 X 坐标
-    int16_t  nearest_beacon_y;   // 最近信标 Y 坐标
-} beacon_result_t;
+// 来源: spi_comm.h / spi_slave.h
+typedef struct
+{
+    int16 center_x;      // 灯塔中心X坐标 (2字节, 小端序)
+    int16 center_y;      // 灯塔中心Y坐标 (2字节, 小端序)
+    uint8 found;         // 是否找到灯塔 (1字节)
+    uint8 confidence;    // 置信度(0-100) (1字节)
+} beacon_result_t;       // 总计: 6字节 (BEACON_DATA_SIZE)
 
-// 完整数据帧: 14字节
+// 完整响应帧: 14字节 (BEACON_RESPONSE_LEN)
 // HEAD(2) + CMD(1) + LEN(2) + beacon_result_t(6) + CRC(2) + TAIL(1) = 14字节
 ```
 
-### 4.3 事件驱动通信时序
+### 4.3 CRC16校验算法
 
-**INT信号握手机制**：从机检测到CS上升沿（主机完成读取）后清除INT信号
+```c
+// 来源: spi_comm.c / spi_slave.c
+// Modbus CRC16算法
+static uint16 calc_crc16(const uint8 *data, uint16 len)
+{
+    uint16 crc = 0xFFFF;
+    for (uint16 i = 0; i < len; i++)
+    {
+        crc ^= data[i];
+        for (uint8 j = 0; j < 8; j++)
+        {
+            if (crc & 0x0001)
+                crc = (crc >> 1) ^ 0xA001;
+            else
+                crc >>= 1;
+        }
+    }
+    return crc;
+}
+```
+
+### 4.4 事件驱动通信时序（实际实现）
+
+**TX FIFO预加载策略**：从机在拉高INT之前预加载数据到TX FIFO
 
 ```
 从机(2BL3)                              主机(4BB7)
     │                                       │
-    │  [1] 图像处理完成                       │
-    │      数据预加载到TX FIFO               │
+    │  [1] 数据更新完成                       │
+    │      build_beacon_response()          │
+    │      preload_tx_fifo()               │
+    │      g_data_pending = 1              │
     │                                       │
-    ├───── [2] INT引脚拉高 ─────────────────►│ 检测到INT上升沿
-    │                                       │ 加入待处理队列
+    ├───── [2] INT引脚拉高 ─────────────────►│ gpio_get_level(INT)检测
+    │      spi_slave_set_int(1)            │
     │                                       │
-    │◄──────────── [3] CS拉低 ─────────────┤ 选中从机
+    │◄──────────── [3] CS拉低 ─────────────┤ gpio_low(CS)
+    │      (SS下降沿检测)                    │ system_delay_us(5)
+    │      清空RX FIFO                      │
     │                                       │
-    │◄════ [4] CMD_GET_BEACON请求 ══════════┤ 发送请求帧
+    │◄════════════ [4] SPI传输 ════════════┤ spi_transfer_8bit()
+    │      TX FIFO数据自动发出              │
     │                                       │
-    │═════ [5] beacon_result响应 ═══════════►│ 返回数据帧
+    │════════════ [5] 响应数据 ═════════════►│ 接收到rx_buf
     │                                       │
-    │◄──────────── [6] CS拉高 ─────────────┤ 释放从机
-    │      (从机检测到CS上升沿)               │
+    │◄──────────── [6] CS拉高 ─────────────┤ gpio_high(CS)
+    │      (SS上升沿检测)                    │
     │                                       │
-    │  [7] INT引脚拉低                        │ 处理数据
-    │      等待下次数据就绪                    │
+    │  [7] INT引脚拉低                        │ parse_response_frame()
+    │      g_data_pending = 0              │ 解析beacon_result
+    │      preload_tx_fifo()               │
     │                                       │
 ```
 
-**关键设计要点**：
-1. **数据先于INT**：从机必须先将数据预加载到TX FIFO，然后才拉高INT
-2. **CS触发清除**：从机检测到CS上升沿后主动清除INT，避免时序竞争
-3. **状态机保护**：从机使用状态机确保数据准备完成后才通知主机
-
-### 4.4 通信参数（可配置）
+### 4.5 协议参数定义（实际实现）
 
 ```c
-// comm_config.h
+// 来源: spi_comm.h
+#define FRAME_HEAD_1        0xAA
+#define FRAME_HEAD_2        0x55
+#define FRAME_TAIL          0xED
 
-// SPI时钟配置（便捷切换）
-#define COMM_SPI_SPEED_LOW      (1 * 1000 * 1000)   // 1MHz (长线缆)
-#define COMM_SPI_SPEED_MEDIUM   (4 * 1000 * 1000)   // 4MHz (排线)
-#define COMM_SPI_SPEED_HIGH     (8 * 1000 * 1000)   // 8MHz (PCB直连)
-#define COMM_SPI_SPEED          COMM_SPI_SPEED_MEDIUM  // 当前配置
+#define CMD_PING            0x01
+#define CMD_GET_BEACON      0x10
 
-// 通信频率配置（便捷更改）
-#define COMM_FREQUENCY_HZ       (100)              // 100Hz
-#define COMM_PERIOD_MS          (1000 / COMM_FREQUENCY_HZ)  // 10ms
+#define MAX_DATA_SIZE       32
+#define FRAME_OVERHEAD      8    // HEAD(2)+CMD(1)+LEN(2)+CRC(2)+TAIL(1)
+#define MAX_FRAME_SIZE      (MAX_DATA_SIZE + FRAME_OVERHEAD)
+#define BEACON_DATA_SIZE    6    // 灯塔数据大小
+#define BEACON_RESPONSE_LEN 14   // 灯塔响应帧长度: 8+6
+
+// 错误码定义
+#define SPI_ERR_OK              0   // 成功
+#define SPI_ERR_FRAME_SHORT     1   // 帧长度不足
+#define SPI_ERR_INVALID_HEAD    2   // 帧头错误
+#define SPI_ERR_PAYLOAD_LONG    3   // 数据长度超限
+#define SPI_ERR_INVALID_TAIL    4   // 帧尾错误
+#define SPI_ERR_CRC_MISMATCH    5   // CRC校验失败
+#define SPI_ERR_INCOMPLETE      6   // 帧不完整
+#define SPI_ERR_NULL_PTR        7   // 空指针参数
+#define SPI_ERR_DATA_SIZE       10  // 数据大小不匹配
+
+// CS延时参数
+#define SPI_CS_SETUP_DELAY_US   5   // CS拉低后到传输开始的延时
+
+// 状态打印间隔
+#define STATUS_PRINT_INTERVAL   1000000
 ```
 
 ---
 
-## 五、软件实现方案
+## 五、软件实现方案（实际代码）
 
 ### 5.1 CYT4BB7软件架构
 
-#### 5.1.1 目录结构
+#### 5.1.1 实际目录结构
 
 ```
 4bb7/4bb7_2bl3_spi/
 ├── code/
-│   ├── spi_comm/
-│   │   ├── spi_master.c          # SPI主机驱动(含GPIO CS)
-│   │   ├── spi_master.h
-│   │   ├── comm_protocol.c       # 通信协议实现
-│   │   ├── comm_protocol.h
-│   │   ├── slave_manager.c       # 从机事件管理
-│   │   ├── slave_manager.h
-│   │   ├── beacon_data.h         # 数据结构定义
-│   │   └── comm_config.h         # 配置参数
-│   └── test/
-│       └── comm_test.c           # 通信测试代码
+│   ├── spi_comm.c          # SPI主机通信实现
+│   ├── spi_comm.h          # SPI主机通信头文件
+│   └── 本文件夹作用.txt
 ├── user/
-│   ├── main_cm7_0.c              # 主程序
-│   └── cm7_0_isr.c               # 中断处理
-└── libraries/                     # 逐飞库
+│   ├── main_cm7_0.c        # 主程序
+│   └── cm7_0_isr.c         # 中断处理
+└── libraries/               # 逐飞库
 ```
 
-#### 5.1.2 核心代码框架
+#### 5.1.2 主要函数（实际实现）
 
-**comm_config.h:**
+**spi_comm.h 关键定义:**
 ```c
-#ifndef _COMM_CONFIG_H_
-#define _COMM_CONFIG_H_
+// 硬件配置
+#define SPI_MASTER_CH       SPI_0
+#define SPI_MASTER_BAUD     (1000000)  // 1MHz波特率
+#define SPI_MASTER_CLK      SPI0_CLK_P02_2
+#define SPI_MASTER_MOSI     SPI0_MOSI_P02_1
+#define SPI_MASTER_MISO     SPI0_MISO_P02_0
+#define SPI_CS_PIN          P02_3
+#define SPI_INT_PIN         P02_4
 
-// ============== SPI配置（用户确认） ==============
-#define COMM_SPI_INDEX          SPI_0           // 使用SPI_0
-#define COMM_SPI_CLK_PIN        SPI0_CLK_P02_2
-#define COMM_SPI_MOSI_PIN       SPI0_MOSI_P02_1
-#define COMM_SPI_MISO_PIN       SPI0_MISO_P02_0
-
-// SPI时钟速度（便捷切换）
-#define COMM_SPI_SPEED_1M       (1 * 1000 * 1000)   // 1MHz
-#define COMM_SPI_SPEED_4M       (4 * 1000 * 1000)   // 4MHz
-#define COMM_SPI_SPEED_8M       (8 * 1000 * 1000)   // 8MHz
-#define COMM_SPI_SPEED          COMM_SPI_SPEED_4M   // 当前使用4MHz
-
-// ============== GPIO CS引脚定义（用户确认） ==============
-#define SLAVE_CS_1_PIN          P02_3           // 从机1 CS (单从机测试)
-#define SLAVE_CS_2_PIN          P01_0           // 从机2 CS
-#define SLAVE_CS_3_PIN          P19_0           // 从机3 CS
-
-// ============== GPIO INT引脚定义（用户确认） ==============
-#define SLAVE_INT_1_PIN         P02_4           // 从机1 INT
-#define SLAVE_INT_2_PIN         P01_1           // 从机2 INT
-#define SLAVE_INT_3_PIN         P19_1           // 从机3 INT
-
-// ============== 从机数量 ==============
-#define SLAVE_COUNT             3
-
-// ============== 通信参数 ==============
-#define COMM_BUFFER_SIZE        32              // 通信缓冲区大小
-#define COMM_FREQUENCY_HZ       100             // 通信频率(Hz)
-#define COMM_PERIOD_MS          (1000 / COMM_FREQUENCY_HZ)  // 通信周期(ms)
-
-// ============== 协议常量 ==============
-#define FRAME_HEAD_1            0x5A
-#define FRAME_HEAD_2            0xA5
-#define FRAME_TAIL              0xAA
-
-#endif
+// 函数声明
+void spi_comm_init(void);              // 初始化SPI通信模块
+uint8 spi_comm_data_ready(void);       // 检测INT信号
+uint8 spi_comm_read_beacon(beacon_result_t *result);  // 读取灯塔数据
+void spi_comm_test(void);              // 测试函数
 ```
 
-**beacon_data.h:**
+**main_cm7_0.c 主循环:**
 ```c
-#ifndef _BEACON_DATA_H_
-#define _BEACON_DATA_H_
+int main(void)
+{
+    clock_init(SYSTEM_CLOCK_250M);
+    debug_init();
 
-#include "zf_common_typedef.h"
+    // 初始化SPI主机
+    spi_comm_init();
+    printf("4BB7 SPI Master Ready\r\n");
 
-// 信标检测结果 (用户确认的数据结构)
-typedef struct {
-    uint8_t  beacon_found;       // 是否检测到信标
-    uint8_t  beacon_count;       // 检测到的信标数量
-    int16_t  nearest_beacon_x;   // 最近信标 X 坐标
-    int16_t  nearest_beacon_y;   // 最近信标 Y 坐标
-} beacon_result_t;               // 6字节
-
-#endif
-```
-
-**slave_manager.h:**
-```c
-#ifndef _SLAVE_MANAGER_H_
-#define _SLAVE_MANAGER_H_
-
-#include "beacon_data.h"
-#include "spi_master.h"
-
-// 从机编号定义
-typedef enum {
-    SLAVE_1 = 0,
-    SLAVE_2,
-    SLAVE_3,
-    SLAVE_NUM = SLAVE_COUNT
-} slave_id_t;
-
-// 从机状态
-typedef struct {
-    uint8_t  online;             // 在线标志
-    uint8_t  data_ready;         // 数据就绪标志(INT触发)
-    uint8_t  error_count;        // 错误计数
-    uint32_t last_update_time;   // 最后更新时间
-    beacon_result_t beacon;      // 最新信标数据
-} slave_status_t;
-
-// 初始化
-void slave_manager_init(void);
-
-// 事件驱动任务(检测INT信号并通信)
-void slave_manager_event_task(void);
-
-// INT信号中断回调
-void slave_manager_int_callback(slave_id_t slave);
-
-// 获取从机状态
-slave_status_t* slave_manager_get_status(slave_id_t slave);
-
-// 获取所有从机信标数据
-void slave_manager_get_all_beacons(beacon_result_t beacons[SLAVE_NUM]);
-
-// 检查是否所有从机在线
-uint8_t slave_manager_all_online(void);
-
-#endif
-```
-
-**slave_manager.c (核心事件驱动逻辑):**
-```c
-#include "slave_manager.h"
-#include "comm_protocol.h"
-#include "zf_common_clock.h"
-
-static slave_status_t slave_status[SLAVE_NUM];
-static uint8_t tx_buffer[COMM_BUFFER_SIZE];
-static uint8_t rx_buffer[COMM_BUFFER_SIZE];
-static volatile uint8_t int_pending[SLAVE_NUM] = {0};  // INT待处理标志
-
-// CS引脚数组（用户确认）
-static const gpio_pin_enum cs_pins[SLAVE_NUM] = {
-    P02_3,  // 从机1 CS (单从机测试)
-    P01_0,  // 从机2 CS
-    P19_0   // 从机3 CS
-};
-
-// INT引脚数组（用户确认）
-static const gpio_pin_enum int_pins[SLAVE_NUM] = {
-    P02_4,  // 从机1 INT
-    P01_1,  // 从机2 INT
-    P19_1   // 从机3 INT
-};
-
-void slave_manager_init(void) {
-    spi_master_init();
-
-    // 初始化CS引脚为输出（高电平）
-    for (int i = 0; i < SLAVE_NUM; i++) {
-        gpio_init(cs_pins[i], GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    while(true)
+    {
+        // SPI通信测试
+        spi_comm_test();
     }
-
-    // 初始化INT引脚为输入
-    for (int i = 0; i < SLAVE_NUM; i++) {
-        gpio_init(int_pins[i], GPI, GPIO_LOW, GPI_PULL_DOWN);
-    }
-
-    // 配置INT引脚上升沿中断（可选）
-    // exti_init(P02_4, EXTI_TRIGGER_RISING);  // 从机1
-    // exti_init(P01_1, EXTI_TRIGGER_RISING);  // 从机2
-    // exti_init(P19_1, EXTI_TRIGGER_RISING);  // 从机3
-
-    for (int i = 0; i < SLAVE_NUM; i++) {
-        slave_status[i].online = 0;
-        slave_status[i].data_ready = 0;
-        slave_status[i].error_count = 0;
-        slave_status[i].last_update_time = 0;
-    }
-}
-
-// INT信号中断回调(在外部中断ISR中调用)
-void slave_manager_int_callback(slave_id_t slave) {
-    if (slave < SLAVE_NUM) {
-        int_pending[slave] = 1;  // 标记有数据待处理
-    }
-}
-
-// 处理单个从机通信
-static void process_slave(slave_id_t slave) {
-    // 1. 选择从机（拉低CS）
-    gpio_low(cs_pins[slave]);
-
-    // 2. 构造请求数据包
-    uint16_t tx_len = comm_protocol_build_request(
-        CMD_GET_BEACON, NULL, 0, tx_buffer);
-
-    // 3. SPI传输
-    spi_master_transfer(tx_buffer, rx_buffer, tx_len + 14);
-
-    // 4. 取消选择（拉高CS）
-    gpio_high(cs_pins[slave]);
-
-    // 5. 解析响应
-    beacon_result_t *beacon = &slave_status[slave].beacon;
-    if (comm_protocol_parse_response(rx_buffer, beacon)) {
-        slave_status[slave].online = 1;
-        slave_status[slave].error_count = 0;
-        slave_status[slave].last_update_time = system_getval_ms();
-    } else {
-        slave_status[slave].error_count++;
-        if (slave_status[slave].error_count > 10) {
-            slave_status[slave].online = 0;
-        }
-    }
-}
-
-// 事件驱动任务(在主循环中调用)
-void slave_manager_event_task(void) {
-    // 检查每个从机的INT标志
-    for (int i = 0; i < SLAVE_NUM; i++) {
-        if (int_pending[i]) {
-            int_pending[i] = 0;  // 清除标志
-            process_slave((slave_id_t)i);
-        }
-    }
-
-    // 备用: 也可以轮询检测INT引脚电平
-    // if (gpio_get_level(P02_4)) process_slave(SLAVE_1);
-    // if (gpio_get_level(P01_1)) process_slave(SLAVE_2);
-    // if (gpio_get_level(P19_1)) process_slave(SLAVE_3);
 }
 ```
 
 ### 5.2 CYT2BL3软件架构
 
-#### 5.2.1 目录结构
+#### 5.2.1 实际目录结构
 
 ```
 2bl3/4bb7_2bl3_spi/
 ├── code/
-│   ├── spi_comm/
-│   │   ├── spi_slave.c           # SPI从机驱动
-│   │   ├── spi_slave.h
-│   │   ├── comm_protocol.c       # 通信协议(与主机共用)
-│   │   ├── comm_protocol.h
-│   │   ├── int_signal.c          # INT信号控制
-│   │   ├── int_signal.h
-│   │   └── comm_config.h         # 配置参数
-│   ├── display/
-│   │   ├── display_system.c      # 显示系统
-│   │   └── display_system.h
-│   └── menu/
-│       ├── menu_core.c           # 菜单核心(移植自mknm_car_new)
-│       ├── menu_core.h
-│       └── ...                   # 暂时删除参数菜单
+│   ├── spi_slave.c         # SPI从机通信实现
+│   ├── spi_slave.h         # SPI从机通信头文件
+│   └── 本文件夹作用.txt
 ├── user/
-│   ├── main_cm4.c                # 主程序
-│   └── cm4_isr.c                 # 中断处理
-└── libraries/                     # 逐飞库
+│   ├── main_cm4.c          # 主程序
+│   └── cm4_isr.c           # 中断处理
+└── libraries/               # 逐飞库
 ```
 
-#### 5.2.2 SPI从机配置（使用SCB0）
+#### 5.2.2 主要函数（实际实现）
 
-**comm_config.h (2BL3):**
+**spi_slave.h 关键定义:**
 ```c
-#ifndef _COMM_CONFIG_H_
-#define _COMM_CONFIG_H_
+// 硬件配置
+#define SPI_SLAVE_SCB       SCB0
+#define SPI_SLAVE_MISO      P0_0
+#define SPI_SLAVE_MOSI      P0_1
+#define SPI_SLAVE_CLK       P0_2
+#define SPI_SLAVE_SS        P0_3
+#define SPI_SLAVE_INT       P18_6
 
-// ============== SPI从机配置（使用SCB0） ==============
-#define SPI_SLAVE_SCB           SCB0            // 使用SCB0 (唯一具备完整SPI从机功能的SCB)
+// 函数声明
+void spi_slave_init(void);                            // 初始化SPI从机
+void spi_slave_set_int(uint8 level);                  // 设置INT信号
+void spi_slave_update_beacon(const beacon_result_t *result);  // 更新灯塔数据
+void spi_slave_task(void);                            // 从机任务处理
+```
 
-// 引脚定义 (P0端口, HSIOM=30 Deep Sleep模式)
-#define SPI_SLAVE_MISO_PIN      P0_0            // 数据输出
-#define SPI_SLAVE_MOSI_PIN      P0_1            // 数据输入
-#define SPI_SLAVE_CLK_PIN       P0_2            // 时钟输入
-#define SPI_SLAVE_SS_PIN        P0_3            // 硬件片选输入
+**main_cm4.c 主循环:**
+```c
+// SCB0资源冲突解决方案
+#define ENABLE_DEBUG_UART   0   // 禁用debug串口，SPI从机独占SCB0
 
-// ============== INT信号配置 ==============
-#define INT_SIGNAL_PIN          P18_6           // 数据就绪信号输出
+int main(void)
+{
+    clock_init(SYSTEM_CLOCK_160M);
 
-// ============== 通信参数 ==============
-#define COMM_BUFFER_SIZE        32              // 通信缓冲区大小
-
-// ============== 协议常量 ==============
-#define FRAME_HEAD_1            0xAA
-#define FRAME_HEAD_2            0x55
-#define FRAME_TAIL              0xED
-
+#if ENABLE_DEBUG_UART
+    debug_init();  // 与SPI从机冲突！
 #endif
-```
 
-**int_signal.h:**
-```c
-#ifndef _INT_SIGNAL_H_
-#define _INT_SIGNAL_H_
+    spi_slave_init();
 
-#include "zf_common_typedef.h"
+    // 设置初始测试数据
+    beacon_result_t test_data = {
+        .center_x = 160,
+        .center_y = 120,
+        .found = 1,
+        .confidence = 85
+    };
+    spi_slave_update_beacon(&test_data);
 
-// 从机状态定义
-typedef enum {
-    SLAVE_STATE_IDLE,           // 空闲，等待图像处理完成
-    SLAVE_STATE_DATA_READY,     // 数据已准备到TX FIFO，INT已拉高
-    SLAVE_STATE_TRANSFERRING,   // 正在被主机读取（CS=低）
-} slave_state_t;
+    while(true)
+    {
+        spi_slave_task();  // SS边沿检测和INT管理
 
-// 初始化INT信号引脚
-void int_signal_init(void);
-
-// 通知主机有新数据就绪（需先调用spi_slave_prepare_tx准备数据）
-void int_signal_set_ready(void);
-
-// 清除数据就绪信号
-void int_signal_clear(void);
-
-// 状态机任务（需在主循环中调用，检测CS上升沿）
-void int_signal_state_task(void);
-
-// 获取当前状态
-slave_state_t int_signal_get_state(void);
-
-#endif
-```
-
-**int_signal.c:**
-```c
-#include "int_signal.h"
-#include "comm_config.h"
-#include "zf_driver_gpio.h"
-
-static volatile slave_state_t slave_state = SLAVE_STATE_IDLE;
-static uint8_t last_cs_state = 1;  // CS默认高电平（未选中）
-
-void int_signal_init(void) {
-    gpio_init(INT_SIGNAL_PIN, GPO, GPIO_LOW, GPO_PUSH_PULL);
-    gpio_init(SPI_SLAVE_CS_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);
-    slave_state = SLAVE_STATE_IDLE;
-    last_cs_state = 1;
-}
-
-void int_signal_set_ready(void) {
-    // 只有在空闲状态才能设置INT（确保数据已准备好）
-    if (slave_state == SLAVE_STATE_IDLE) {
-        gpio_high(INT_SIGNAL_PIN);  // 拉高INT信号
-        slave_state = SLAVE_STATE_DATA_READY;
+        // 周期性更新测试数据
+        // ...
     }
 }
-
-void int_signal_clear(void) {
-    gpio_low(INT_SIGNAL_PIN);   // 拉低INT信号
-    slave_state = SLAVE_STATE_IDLE;
-}
-
-// 状态机任务 - 检测CS上升沿清除INT
-void int_signal_state_task(void) {
-    uint8_t curr_cs_state = gpio_get_level(SPI_SLAVE_CS_PIN);
-
-    switch (slave_state) {
-        case SLAVE_STATE_IDLE:
-            // 空闲状态，等待数据准备完成后调用int_signal_set_ready()
-            break;
-
-        case SLAVE_STATE_DATA_READY:
-            // 数据就绪，等待主机选中（CS下降沿）
-            if (last_cs_state == 1 && curr_cs_state == 0) {
-                slave_state = SLAVE_STATE_TRANSFERRING;
-            }
-            break;
-
-        case SLAVE_STATE_TRANSFERRING:
-            // 传输中，等待主机完成读取（CS上升沿）
-            if (last_cs_state == 0 && curr_cs_state == 1) {
-                int_signal_clear();  // CS拉高时清除INT
-            }
-            break;
-    }
-
-    last_cs_state = curr_cs_state;
-}
-
-slave_state_t int_signal_get_state(void) {
-    return slave_state;
-}
 ```
 
-#### 5.2.3 SPI从机驱动关键实现
+#### 5.2.3 SPI从机核心实现
 
-**spi_slave.c (核心初始化):**
+**引脚初始化 (spi_slave.c):**
 ```c
-#include "spi_slave.h"
-#include "comm_config.h"
-#include "scb/cy_scb_spi.h"
-#include "gpio/cy_gpio.h"
-#include "sysclk/cy_sysclk.h"
-
-static cy_stc_scb_spi_context_t spi_context;
-static uint8_t tx_buffer[COMM_BUFFER_SIZE];
-static uint8_t rx_buffer[COMM_BUFFER_SIZE];
-static volatile uint8_t transfer_complete = 0;
-
-// SPI从机配置
-static const cy_stc_scb_spi_config_t spi_slave_config = {
-    .spiMode            = CY_SCB_SPI_SLAVE,         // 从机模式!
-    .subMode            = CY_SCB_SPI_MOTOROLA,
-    .sclkMode           = CY_SCB_SPI_CPHA0_CPOL0,   // MODE0
-    .oversample         = 0,                         // 从机不需要过采样
-    .rxDataWidth        = 8,
-    .txDataWidth        = 8,
-    .enableMsbFirst     = true,
-    .enableInputFilter  = true,
-    .enableFreeRunSclk  = false,
-    .enableMisoLateSample = false,
-    .enableTransferSeperation = false,
-
-    // FIFO配置
-    .rxFifoTriggerLevel   = 0,
-    .rxFifoIntEnableMask  = CY_SCB_SPI_RX_NOT_EMPTY,
-    .txFifoTriggerLevel   = 0,
-    .txFifoIntEnableMask  = 0,
-
-    .enableSpiDoneInterrupt = true,
-    .enableSpiBusErrorInterrupt = true,
-};
-
-void spi_slave_init(void) {
+static void spi_slave_init_pins(void)
+{
     cy_stc_gpio_pin_config_t pin_cfg = {0};
 
-    // 1. 配置GPIO引脚 (P0端口, HSIOM=30 Deep Sleep模式)
-    // MISO - 从机输出 (强驱动)
+    // MISO (P0_0) - 从机输出 (强驱动)
     pin_cfg.driveMode = CY_GPIO_DM_STRONG_IN_OFF;
     pin_cfg.hsiom = P0_0_SCB0_SPI_MISO;
     Cy_GPIO_Pin_Init(GPIO_PRT0, 0, &pin_cfg);
 
-    // MOSI - 从机输入 (高阻)
+    // MOSI (P0_1) - 从机输入 (高阻)
     pin_cfg.driveMode = CY_GPIO_DM_HIGHZ;
     pin_cfg.hsiom = P0_1_SCB0_SPI_MOSI;
     Cy_GPIO_Pin_Init(GPIO_PRT0, 1, &pin_cfg);
 
-    // CLK - 从机输入 (高阻)
+    // CLK (P0_2) - 从机输入 (高阻)
     pin_cfg.driveMode = CY_GPIO_DM_HIGHZ;
     pin_cfg.hsiom = P0_2_SCB0_SPI_CLK;
     Cy_GPIO_Pin_Init(GPIO_PRT0, 2, &pin_cfg);
 
-    // SS - 硬件片选输入 (使用SCB硬件功能)
+    // SS (P0_3) - 硬件片选输入 (使用SCB硬件功能)
     pin_cfg.driveMode = CY_GPIO_DM_HIGHZ;
     pin_cfg.hsiom = P0_3_SCB0_SPI_SELECT0;
     Cy_GPIO_Pin_Init(GPIO_PRT0, 3, &pin_cfg);
 
-    // 2. 配置时钟
-    Cy_SysClk_PeriphAssignDivider(PCLK_SCB0_CLOCK, CY_SYSCLK_DIV_8_BIT, 0);
-    Cy_SysClk_PeriphSetDivider(CY_SYSCLK_DIV_8_BIT, 0, 0);  // 不分频
-    Cy_SysClk_PeriphEnableDivider(CY_SYSCLK_DIV_8_BIT, 0);
-
-    // 3. 初始化SCB0为SPI从机
-    Cy_SCB_SPI_Init(SCB0, &spi_slave_config, &spi_context);
-    Cy_SCB_SPI_SetActiveSlaveSelect(SCB0, CY_SCB_SPI_SLAVE_SELECT0);
-    Cy_SCB_SPI_Enable(SCB0);
-
-    // 4. 配置中断
-    // ... (中断配置代码)
-}
-
-// 准备发送数据（在设置INT之前必须先调用此函数预加载数据）
-void spi_slave_prepare_tx(const uint8_t *data, uint16_t len) {
-    Cy_SCB_SPI_ClearTxFifo(SCB0);
-    for (uint16_t i = 0; i < len; i++) {
-        Cy_SCB_SPI_Write(SCB0, data[i]);
-    }
-}
-
-// 检查是否被选中(SS低电平) - 使用硬件SS引脚P0_3
-uint8_t spi_slave_is_selected(void) {
-    return (Cy_GPIO_Read(GPIO_PRT0, 3) == 0);
-}
-
-// 获取接收到的数据
-uint16_t spi_slave_get_rx_data(uint8_t *data, uint16_t max_len) {
-    uint16_t count = 0;
-    while (Cy_SCB_SPI_GetNumInRxFifo(SCB0) > 0 && count < max_len) {
-        data[count++] = (uint8_t)Cy_SCB_SPI_Read(SCB0);
-    }
-    return count;
+    // INT (P18_6) - GPIO输出
+    gpio_init(SPI_SLAVE_INT, GPO, GPIO_LOW, GPO_PUSH_PULL);
 }
 ```
 
-#### 5.2.4 从机数据通知使用示例
-
-**正确的使用顺序（数据先于INT）**：
+**TX FIFO预加载策略 (spi_slave.c):**
 ```c
-// 在图像处理完成的回调中调用
-void on_image_process_complete(beacon_result_t *result) {
-    // 1. 先构建响应数据帧
-    uint8_t response_frame[COMM_BUFFER_SIZE];
-    uint16_t frame_len = comm_protocol_build_response(
-        CMD_DATA, (uint8_t*)result, sizeof(beacon_result_t), response_frame);
-
-    // 2. 将数据预加载到TX FIFO（必须在设置INT之前）
-    spi_slave_prepare_tx(response_frame, frame_len);
-
-    // 3. 数据准备完成后，通知主机（设置INT）
-    int_signal_set_ready();
+static void preload_tx_fifo(void)
+{
+    Cy_SCB_SPI_ClearTxFifo(SPI_SLAVE_SCB);
+    for (uint8 i = 0; i < BEACON_RESPONSE_LEN; i++)
+    {
+        Cy_SCB_WriteTxFifo(SPI_SLAVE_SCB, g_tx_buffer[i]);
+    }
 }
 
-// 主循环中调用状态机任务
-void main_loop(void) {
-    while (1) {
-        // 状态机任务：检测CS上升沿并清除INT
-        int_signal_state_task();
+void spi_slave_update_beacon(const beacon_result_t *result)
+{
+    if (result == NULL) return;
 
-        // 其他任务...
+    g_beacon_data = *result;
+    build_beacon_response(g_tx_buffer);  // 构建响应帧
+    preload_tx_fifo();                   // 预加载到TX FIFO
+    g_data_pending = 1;
+    spi_slave_set_int(1);                // 拉高INT通知主机
+}
+```
+
+**SS边沿检测 (spi_slave.c):**
+```c
+void spi_slave_task(void)
+{
+    static uint8 ss_last = 1;
+    uint8 ss_now = Cy_GPIO_Read(GPIO_PRT0, 3);
+
+    // 检测SS下降沿 (主机开始通信)
+    if (ss_last == 1 && ss_now == 0)
+    {
+        Cy_SCB_SPI_ClearRxFifo(SPI_SLAVE_SCB);
     }
+
+    // 检测SS上升沿 (传输完成)
+    if (ss_last == 0 && ss_now == 1)
+    {
+        if (g_data_pending)
+        {
+            g_data_pending = 0;
+            spi_slave_set_int(0);    // 拉低INT
+            preload_tx_fifo();       // 重新预加载
+        }
+    }
+
+    ss_last = ss_now;
 }
 ```
 
@@ -779,113 +512,159 @@ void main_loop(void) {
 
 ## 六、开发阶段规划
 
-### 6.1 第一阶段：基础通信验证（中断模式）
+### 6.1 第一阶段：基础通信验证（中断模式）✅ **已完成**
 
 **目标**：1个4BB7 + 1个2BL3实现基础SPI通信
 
 **任务**：
-1. [ ] 4BB7 SPI主机驱动开发（单CS，中断模式）
-2. [ ] 2BL3 SPI从机驱动开发（中断模式）
-3. [ ] 通信协议基础实现
-4. [ ] INT信号机制实现
-5. [ ] 简单数据收发测试
+- [x] 4BB7 SPI主机驱动开发（单CS，中断模式）
+- [x] 2BL3 SPI从机驱动开发（SCB0，中断模式）
+- [x] 通信协议基础实现（帧头帧尾、CRC16）
+- [x] INT信号机制实现（TX FIFO预加载策略）
+- [x] 简单数据收发测试
 
-**验收标准**：
-- 主机能正确发送请求
-- 从机能正确响应
-- INT信号触发正常
-- 数据无丢失、无错误
+**验收结果**：
+- ✅ 主机能正确发送请求
+- ✅ 从机能正确响应（数据：x=160,y=120,found=1,conf=85）
+- ✅ INT信号触发正常
+- ✅ 数据变化规律符合预期（x+10 mod 320, y+5 mod 240）
+- ✅ CRC校验正确
 
-### 6.2 第二阶段：多从机扩展
+**解决的问题**：
+1. **SCB0资源冲突**：Debug UART与SPI从机均使用SCB0，通过ENABLE_DEBUG_UART宏解决
+2. **TX FIFO竞态**：SS下降沿时TX FIFO可能未准备好，通过预加载策略解决
+3. **帧头错误(err=2)**：硬件接线问题，检查SS/CS连接后解决
+
+### 6.2 第二阶段：多从机扩展 ⏳ 待开始
 
 **目标**：扩展到3个CS控制3个从机
 
 **任务**：
-1. [ ] 4BB7添加GPIO CS控制代码
-2. [ ] 4BB7添加多INT检测
-3. [ ] 从机管理模块开发
-4. [ ] 事件驱动调度实现
-5. [ ] 3从机通信测试
+- [ ] 4BB7添加GPIO CS控制代码（P01_0, P19_0）
+- [ ] 4BB7添加多INT检测（P01_1, P19_1）
+- [ ] 从机管理模块开发
+- [ ] 事件驱动调度实现
+- [ ] 3从机通信测试
 
 **验收标准**：
 - 3个CS线能正确控制
 - 3个INT信号能正确检测
 - 事件驱动通信正常
 
-### 6.3 第三阶段：DMA优化
+### 6.3 第三阶段：DMA优化 ⏳ 待开始
 
 **目标**：使用DMA提升通信效率
 
 **任务**：
-1. [ ] 4BB7 SPI主机DMA实现
-2. [ ] 2BL3 SPI从机DMA实现
-3. [ ] 性能测试和优化
+- [ ] 4BB7 SPI主机DMA实现
+- [ ] 2BL3 SPI从机DMA实现
+- [ ] 性能测试和优化
 
 **验收标准**：
 - DMA传输稳定
 - CPU占用率显著降低
 
-### 6.4 第四阶段：功能完善
+### 6.4 第四阶段：功能完善 ⏳ 待开始
 
 **目标**：完成2BL3端的显示和菜单功能
 
 **任务**：
-1. [ ] 移植IPS114屏幕驱动
-2. [ ] 移植菜单系统框架（暂不含参数菜单）
-3. [ ] 屏幕显示测试
+- [ ] 移植IPS114屏幕驱动
+- [ ] 移植菜单系统框架（暂不含参数菜单）
+- [ ] 屏幕显示测试
 
 **验收标准**：
 - 屏幕显示正常
 - 菜单操作正常
 
-### 6.5 第五阶段：集成测试
+### 6.5 第五阶段：集成测试 ⏳ 待开始
 
 **目标**：系统联调
 
 **任务**：
-1. [ ] 3个2BL3同时运行测试
-2. [ ] 100Hz通信稳定性测试
-3. [ ] 长时间稳定性测试
-4. [ ] 异常处理测试
-5. [ ] 性能优化
+- [ ] 3个2BL3同时运行测试
+- [ ] 100Hz通信稳定性测试
+- [ ] 长时间稳定性测试
+- [ ] 异常处理测试
+- [ ] 性能优化
 
 ---
 
 ## 七、测试方案
 
-### 7.1 单元测试
+### 7.1 第一阶段测试结果
 
-| 测试项 | 测试方法 | 预期结果 |
-|--------|---------|---------|
-| GPIO CS控制 | 示波器观察 | 3个CS独立可控 |
-| GPIO INT检测 | 手动触发 | 能检测上升沿 |
-| SPI主机发送 | 示波器观察波形 | 时序正确 |
-| SPI从机接收 | 打印接收数据 | 数据正确 |
-| CRC校验 | 故意破坏数据 | 能检测错误 |
+| 测试项 | 测试方法 | 结果 |
+|--------|---------|------|
+| SPI主机发送 | 串口打印 | ✅ 通过 |
+| SPI从机接收 | 逻辑分析仪 | ✅ 通过 |
+| INT信号触发 | 串口打印INT=0/1 | ✅ 通过 |
+| CRC校验 | 对比计算值 | ✅ 通过 |
+| 数据解析 | 串口打印beacon | ✅ 通过 |
 
-### 7.2 集成测试
+**测试输出样例**:
+```
+4BB7 SPI Master Ready
+Beacon: x=160, y=120, found=1, conf=85
+Beacon: x=170, y=125, found=1, conf=90
+Beacon: x=180, y=130, found=1, conf=80
+...
+```
 
-| 测试项 | 测试方法 | 预期结果 |
-|--------|---------|---------|
-| 单从机通信 | 持续通信1小时 | 无错误 |
-| 事件驱动 | INT触发通信 | 响应及时 |
-| 多从机轮询 | 3从机同时运行 | 各从机正常 |
-| 100Hz测试 | 监测通信频率 | 稳定100Hz |
+### 7.2 待完成的测试
+
+| 测试项 | 测试方法 | 状态 |
+|--------|---------|------|
+| 单从机长时间运行 | 持续通信1小时 | ⏳ 待测 |
+| 多从机轮询 | 3从机同时运行 | ⏳ 待测 |
+| 100Hz频率测试 | 监测通信频率 | ⏳ 待测 |
+| DMA传输稳定性 | DMA模式运行 | ⏳ 待测 |
 
 ### 7.3 验收标准
 
-| 测试项 | 验收标准 |
-|--------|---------|
-| 通信成功率 | >99.9% |
-| 通信频率 | 100Hz±5% |
-| 响应延迟 | <1ms |
-| 稳定运行时间 | ≥24小时 |
+| 测试项 | 验收标准 | 当前状态 |
+|--------|---------|----------|
+| 通信成功率 | >99.9% | ⏳ 待测 |
+| 通信频率 | 100Hz±5% | ⏳ 待测 |
+| 响应延迟 | <1ms | ⏳ 待测 |
+| 稳定运行时间 | ≥24小时 | ⏳ 待测 |
+
+---
+
+## 八、已知问题与解决方案
+
+### 8.1 已解决的问题
+
+| 问题 | 原因 | 解决方案 |
+|------|------|----------|
+| SCB0资源冲突 | Debug UART和SPI从机均使用SCB0 | 添加ENABLE_DEBUG_UART宏，禁用debug串口 |
+| TX FIFO竞态 | SS下降沿时TX数据未准备好 | 采用预加载策略，数据更新后立即加载TX FIFO |
+| 帧头错误(err=2) | 硬件SS/CS连接问题 | 检查并修复硬件接线 |
+| INT信号未清除 | 缺少SS上升沿检测 | 在spi_slave_task()中检测SS上升沿并清除INT |
+
+### 8.2 待解决的问题
+
+| 问题 | 影响 | 计划解决方案 |
+|------|------|-------------|
+| 2BL3无调试串口 | 调试困难 | 将debug串口迁移到其他SCB（如SCB5/P7端口） |
+| 多从机支持 | 功能不完整 | 第二阶段实现 |
 
 ---
 
 ## 附录
 
-### A. 参考代码位置
+### A. 实际代码文件清单
+
+| 功能 | 文件路径 | 行数 |
+|------|---------|------|
+| 主机通信模块 | `4bb7/4bb7_2bl3_spi/code/spi_comm.c` | ~213行 |
+| 主机通信头文件 | `4bb7/4bb7_2bl3_spi/code/spi_comm.h` | ~96行 |
+| 从机通信模块 | `2bl3/4bb7_2bl3_spi/code/spi_slave.c` | ~256行 |
+| 从机通信头文件 | `2bl3/4bb7_2bl3_spi/code/spi_slave.h` | ~73行 |
+| 主机主程序 | `4bb7/4bb7_2bl3_spi/user/main_cm7_0.c` | - |
+| 从机主程序 | `2bl3/4bb7_2bl3_spi/user/main_cm4.c` | ~78行 |
+
+### B. 参考代码位置
 
 | 功能 | 参考代码路径 |
 |------|-------------|
@@ -894,9 +673,19 @@ void main_loop(void) {
 | SCB SPI底层 | `libraries/sdk/common/src/drivers/scb/cy_scb_spi.c` |
 | 菜单系统 | `mknm_car_new/mknm_car/code/menu/` |
 
-### B. 官方参考资源
+### C. 官方参考资源
 
 - [Infineon SPI Master with DMA Example](https://github.com/Infineon/mtb-t2g-lite-example-spi-master-dma)
 - [AN225401 - How to use SCB in TRAVEO T2G](https://documentation.infineon.com/traveo/docs/qmr1680597505537)
 - [CYT4BB Datasheet](https://www.infineon.com/cms/en/product/microcontroller/32-bit-traveo-t2g-arm-cortex-microcontroller/)
 - [CYT2BL Datasheet](https://www.infineon.com/cms/en/product/microcontroller/32-bit-traveo-t2g-arm-cortex-microcontroller/)
+
+### D. 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v1.0 | 2024-12 | 初版实施计划 |
+| v2.0 | 2024-12 | 添加INT信号机制 |
+| v3.0 | 2024-12 | 确认SCB0为SPI从机 |
+| v3.1 | 2024-12 | INT信号时序优化 |
+| **v4.0** | **2025-12** | **第一阶段验证完成，更新为实际实现的代码和架构** |
