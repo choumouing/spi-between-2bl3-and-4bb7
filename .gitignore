@@ -1,0 +1,132 @@
+# ================================================================
+# .gitignore for CYT4BB7 & CYT2BL3 SPI Communication Project
+# IAR Embedded Workbench for ARM
+# ================================================================
+
+# ======================== IAR Embedded Workbench ========================
+
+# IAR build output directories
+Debug*/
+Release*/
+**/Obj/
+**/List/
+**/Exe/
+**/BrowseInfo/
+
+# IAR settings (user-specific, should not be versioned)
+**/settings/
+*.wsdt
+*.wspos
+
+# IAR dependency files
+*.dep
+*.pbi
+*.pbi.dep
+*.browse
+*.xcl
+
+# IAR debug session files
+*.dni
+*.dbgdt
+*.cspy.bat
+*.cspy.ps1
+
+# IAR workspace layout (user preference)
+*.custom_argvars
+
+# ======================== Object & Binary Files ========================
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+*.hex
+*.bin
+*.srec
+*.s37
+*.mot
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# ======================== Debug Files ========================
+
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# ======================== IDE & Editor ========================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ======================== OS Generated ========================
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+nul
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.fuse_hidden*
+.Trash-*
+
+# ======================== Temporary & Backup Files ========================
+
+*.tmp
+*.temp
+*.bak
+*.backup
+*.swp
+*.swo
+*~
+
+# Log files
+*.log
+
+# ======================== Project Specific ========================
+
+# 不要忽略以下重要文件:
+# - *.eww (IAR workspace)
+# - *.ewp (IAR project)
+# - *.ewd (IAR debug configuration)
+# - *.icf (linker configuration)
+# - source code files (*.c, *.h, *.s, *.asm)
+
