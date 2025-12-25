@@ -50,7 +50,8 @@
 #define SPI_ERR_CRC_MISMATCH    5               // CRC校验失败
 #define SPI_ERR_INCOMPLETE      6               // 帧不完整
 #define SPI_ERR_NULL_PTR        7               // 空指针参数
-#define SPI_ERR_DATA_SIZE       10              // 数据大小不匹配
+#define SPI_ERR_TIMEOUT         8               // 传输超时
+#define SPI_ERR_DATA_SIZE       9               // 数据大小不匹配
 
 // CS延时参数 (微秒)
 #define SPI_CS_SETUP_DELAY_US   5               // CS拉低后到传输开始的延时
