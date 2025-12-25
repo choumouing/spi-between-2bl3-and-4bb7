@@ -33,10 +33,20 @@
 | 阶段 | 状态 | 完成日期 |
 |------|------|----------|
 | **第一阶段：基础通信验证** | ✅ **已完成** | 2025-12-25 |
-| 第二阶段：多从机扩展 | ⏳ 待开始 | - |
-| 第三阶段：DMA优化 | ⏳ 待开始 | - |
-| 第四阶段：功能完善 | ⏳ 待开始 | - |
-| 第五阶段：集成测试 | ⏳ 待开始 | - |
+| 第二阶段：主机DMA优化 | ⏳ 待开始 | - |
+| 第三阶段：从机DMA优化（可选） | ⏳ 待开始 | - |
+| 第四阶段：多从机扩展 | ⏳ 待开始 | - |
+| 第五阶段：功能完善 | ⏳ 待开始 | - |
+| 第六阶段：集成测试 | ⏳ 待开始 | - |
+
+**阶段调整说明**（v4.1）：
+- 原方案：先多从机扩展，后DMA优化
+- 新方案：**先DMA优化，后多从机扩展**
+- 调整理由：
+  1. DMA是底层变化，先稳定底层再扩展上层
+  2. 单从机环境下调试DMA，变量最少，便于定位问题
+  3. DMA接口确定后，多从机管理可直接基于异步API设计
+  4. 避免"先写同步代码，后改异步"的重构成本
 
 ---
 
@@ -535,36 +545,171 @@ void spi_slave_task(void)
 2. **TX FIFO竞态**：SS下降沿时TX FIFO可能未准备好，通过预加载策略解决
 3. **帧头错误(err=2)**：硬件接线问题，检查SS/CS连接后解决
 
-### 6.2 第二阶段：多从机扩展 ⏳ 待开始
+### 6.2 第二阶段：主机DMA优化 ⏳ 待开始
+
+**目标**：4BB7主机端使用PDMA传输，从机保持中断模式
+
+**设计理由**：
+- 先在单从机环境下验证DMA，变量最少，便于调试
+- DMA是底层变化，先稳定底层再扩展上层
+- 主机端DMA配置与从机数量无关，验证后可直接复用到多从机场景
+- 从机端对DMA完全透明，无需任何修改
+
+**当前代码分析**（需要改造的部分）：
+```c
+// 当前 spi_comm.c:162 - 阻塞式传输
+spi_transfer_8bit(SPI_MASTER_CH, tx_buf, rx_buf, transfer_len);
+// ↑ CPU在此等待整个传输完成（约112μs @ 1MHz）
+
+// DMA优化后 - 非阻塞式传输
+spi_transfer_dma(tx_buf, rx_buf, transfer_len, on_complete_callback);
+// ↑ CPU启动DMA后立即返回，完成后通过中断通知
+```
+
+**任务**：
+- [ ] 配置PDMA通道（TX: 1个通道，RX: 1个通道）
+- [ ] 配置DMA描述符（源地址、目的地址、传输长度）
+- [ ] 实现DMA传输启动函数 `spi_transfer_dma()`
+- [ ] 实现DMA完成中断处理 `DMA_Complete_ISR()`
+- [ ] 修改 `spi_comm_read_beacon()` 为异步模式（回调机制）
+- [ ] 修改 `spi_comm_test()` 适配异步API
+- [ ] 中断模式与DMA模式对比测试（CPU占用率、稳定性）
+
+**涉及的CYT4BB7资源**：
+| 资源 | 配置 | 说明 |
+|------|------|------|
+| PDMA通道 | 2个（TX+RX） | SCB7的DMA触发信号 |
+| DMA描述符 | 2个 | 存放在RAM中 |
+| 中断 | DMA完成中断 | 替代原有轮询 |
+
+**API变化设计**：
+```c
+// 新增异步接口
+typedef void (*spi_callback_t)(uint8 error_code, beacon_result_t *result);
+void spi_comm_read_beacon_async(spi_callback_t callback);
+
+// 保留同步接口（内部使用标志位等待）
+uint8 spi_comm_read_beacon(beacon_result_t *result);  // 兼容现有代码
+```
+
+**验收标准**：
+- DMA传输数据正确（CRC校验通过）
+- DMA完成中断正常触发
+- CPU占用率降低（传输期间可执行其他代码）
+- 与中断模式性能对比数据
+
+### 6.3 第三阶段：从机DMA优化（可选）⏳ 待开始
+
+**目标**：2BL3从机端使用DMA传输
+
+**设计理由**：
+- 从机端DMA收益相对较小（每次仅14字节，约112μs）
+- 从机端有特殊挑战：SS信号同步问题
+- 建议先评估主机DMA收益后，再决定是否实施
+
+**当前代码分析**（需要改造的部分）：
+```c
+// 当前 spi_slave.c:148-156 - CPU逐字节加载TX FIFO
+static void preload_tx_fifo(void)
+{
+    Cy_SCB_SPI_ClearTxFifo(SPI_SLAVE_SCB);
+    for (uint8 i = 0; i < BEACON_RESPONSE_LEN; i++)
+    {
+        Cy_SCB_WriteTxFifo(SPI_SLAVE_SCB, g_tx_buffer[i]);
+    }
+}
+
+// DMA优化后 - DMA自动加载
+static void preload_tx_fifo_dma(void)
+{
+    Cy_PDMA_Channel_SetDescriptor(TX_DMA_CH, &tx_descriptor);
+    Cy_PDMA_Channel_Enable(TX_DMA_CH);
+    // DMA自动将g_tx_buffer搬运到TX FIFO
+}
+```
+
+**从机DMA的特殊挑战**：
+```
+问题：SS信号由主机控制，从机无法预知传输开始时刻
+
+方案A：TX预加载 + RX用DMA
+  - TX仍使用现有的FIFO预加载策略（简单可靠）
+  - RX使用DMA接收主机请求
+  - 收益：仅节省RX的CPU时间
+
+方案B：SS下降沿触发DMA
+  - 配置SS引脚中断（下降沿）
+  - 中断中启动TX/RX DMA
+  - 风险：中断延迟可能导致第一个字节丢失
+
+推荐：方案A（TX预加载 + RX DMA），风险最低
+```
+
+**任务**：
+- [ ] 评估主机DMA优化后的整体性能
+- [ ] 决定是否需要从机DMA优化
+- [ ] （如需要）配置DW通道（TX: 1个，RX: 1个）
+- [ ] （如需要）实现RX DMA接收
+- [ ] （如需要）测试SS信号同步
+
+**验收标准**：
+- 从机CPU占用率评估
+- 与纯中断模式性能对比
+- SS信号同步无丢字节
+
+### 6.4 第四阶段：多从机扩展 ⏳ 待开始
 
 **目标**：扩展到3个CS控制3个从机
 
+**设计理由**：
+- DMA接口已稳定，多从机管理直接基于DMA接口设计
+- 避免"先写同步代码，后改异步"的重构成本
+- 每个阶段只改变一个维度（此阶段只增加从机数量）
+
+**当前代码分析**（需要扩展的部分）：
+```c
+// 当前 spi_comm.h - 单从机配置
+#define SPI_CS_PIN          P02_3
+#define SPI_INT_PIN         P02_4
+
+// 扩展后 - 多从机配置
+#define SLAVE_COUNT         3
+#define SPI_CS_PINS         {P02_3, P01_0, P19_0}
+#define SPI_INT_PINS        {P02_4, P01_1, P19_1}
+```
+
 **任务**：
-- [ ] 4BB7添加GPIO CS控制代码（P01_0, P19_0）
-- [ ] 4BB7添加多INT检测（P01_1, P19_1）
-- [ ] 从机管理模块开发
-- [ ] 事件驱动调度实现
+- [ ] 定义从机ID枚举 `slave_id_t`
+- [ ] 添加GPIO CS引脚数组（P02_3, P01_0, P19_0）
+- [ ] 添加GPIO INT引脚数组（P02_4, P01_1, P19_1）
+- [ ] 实现从机管理模块 `slave_manager.c/h`
+- [ ] 实现事件驱动调度（INT触发 → 加入队列 → 依次通信）
+- [ ] 实现 `slave_manager_process_all()` 轮询函数
 - [ ] 3从机通信测试
 
+**从机管理模块设计**：
+```c
+// slave_manager.h
+typedef enum { SLAVE_1 = 0, SLAVE_2, SLAVE_3 } slave_id_t;
+
+typedef struct {
+    uint8 online;
+    uint8 data_ready;
+    beacon_result_t beacon;
+} slave_status_t;
+
+void slave_manager_init(void);
+void slave_manager_task(void);  // 主循环调用
+slave_status_t* slave_manager_get_status(slave_id_t id);
+```
+
 **验收标准**：
-- 3个CS线能正确控制
+- 3个CS线能独立控制
 - 3个INT信号能正确检测
 - 事件驱动通信正常
+- 各从机数据独立无干扰
 
-### 6.3 第三阶段：DMA优化 ⏳ 待开始
-
-**目标**：使用DMA提升通信效率
-
-**任务**：
-- [ ] 4BB7 SPI主机DMA实现
-- [ ] 2BL3 SPI从机DMA实现
-- [ ] 性能测试和优化
-
-**验收标准**：
-- DMA传输稳定
-- CPU占用率显著降低
-
-### 6.4 第四阶段：功能完善 ⏳ 待开始
+### 6.5 第五阶段：功能完善 ⏳ 待开始
 
 **目标**：完成2BL3端的显示和菜单功能
 
@@ -572,21 +717,29 @@ void spi_slave_task(void)
 - [ ] 移植IPS114屏幕驱动
 - [ ] 移植菜单系统框架（暂不含参数菜单）
 - [ ] 屏幕显示测试
+- [ ] 恢复debug串口功能（迁移到其他SCB）
 
 **验收标准**：
 - 屏幕显示正常
 - 菜单操作正常
+- debug串口与SPI从机共存
 
-### 6.5 第五阶段：集成测试 ⏳ 待开始
+### 6.6 第六阶段：集成测试 ⏳ 待开始
 
 **目标**：系统联调
 
 **任务**：
 - [ ] 3个2BL3同时运行测试
 - [ ] 100Hz通信稳定性测试
-- [ ] 长时间稳定性测试
-- [ ] 异常处理测试
-- [ ] 性能优化
+- [ ] 长时间稳定性测试（≥24小时）
+- [ ] 异常处理测试（从机掉线、通信错误恢复）
+- [ ] 性能优化（根据测试结果调整）
+
+**验收标准**：
+- 通信成功率 >99.9%
+- 通信频率稳定 100Hz±5%
+- 响应延迟 <1ms
+- 连续运行 ≥24小时无故障
 
 ---
 
