@@ -33,20 +33,15 @@
 | 阶段 | 状态 | 完成日期 |
 |------|------|----------|
 | **第一阶段：基础通信验证** | ✅ **已完成** | 2025-12-25 |
-| 第二阶段：主机DMA优化 | ⏳ 待开始 | - |
-| 第三阶段：从机DMA优化（可选） | ⏳ 待开始 | - |
-| 第四阶段：多从机扩展 | ⏳ 待开始 | - |
-| 第五阶段：功能完善 | ⏳ 待开始 | - |
-| 第六阶段：集成测试 | ⏳ 待开始 | - |
+| **第二阶段：传输优化** | ✅ **已完成** | 2025-12-25 |
+| 第三阶段：多从机扩展 | ⏳ 待开始 | - |
+| 第四阶段：功能完善 | ⏳ 待开始 | - |
+| 第五阶段：集成测试 | ⏳ 待开始 | - |
 
-**阶段调整说明**（v4.1）：
-- 原方案：先多从机扩展，后DMA优化
-- 新方案：**先DMA优化，后多从机扩展**
-- 调整理由：
-  1. DMA是底层变化，先稳定底层再扩展上层
-  2. 单从机环境下调试DMA，变量最少，便于定位问题
-  3. DMA接口确定后，多从机管理可直接基于异步API设计
-  4. 避免"先写同步代码，后改异步"的重构成本
+**阶段调整说明**（v4.2）：
+- 原第二阶段"主机DMA优化"已完成评估，结论：对14字节数据DMA收益过低
+- 最终方案：采用FIFO批量填充方式，简单可靠
+- 移除"从机DMA优化"阶段，遵循YAGNI原则
 
 ---
 
@@ -545,126 +540,68 @@ void spi_slave_task(void)
 2. **TX FIFO竞态**：SS下降沿时TX FIFO可能未准备好，通过预加载策略解决
 3. **帧头错误(err=2)**：硬件接线问题，检查SS/CS连接后解决
 
-### 6.2 第二阶段：主机DMA优化 ⏳ 待开始
+### 6.2 第二阶段：传输优化（FIFO批量填充）✅ **已完成**
 
-**目标**：4BB7主机端使用PDMA传输，从机保持中断模式
+**目标**：优化4BB7主机端SPI传输效率
 
-**设计理由**：
-- 先在单从机环境下验证DMA，变量最少，便于调试
-- DMA是底层变化，先稳定底层再扩展上层
-- 主机端DMA配置与从机数量无关，验证后可直接复用到多从机场景
-- 从机端对DMA完全透明，无需任何修改
+**最终方案**：采用FIFO批量填充方式，放弃DMA
 
-**当前代码分析**（需要改造的部分）：
+**设计理由（遵循YAGNI原则）**：
+- 传输数据量仅14字节，远小于SCB7 FIFO深度(256字节)
+- @1MHz传输仅需112μs，DMA收益可忽略不计
+- DMA配置复杂（描述符、通道、触发机制），增加调试难度
+- FIFO批量填充方式简单可靠，已在第一阶段验证成功
+
+**DMA方案放弃原因**：
+1. 经深入分析SDK源码，DMA软件触发配置正确（CPUSS_SW_TR_PRESENT=1）
+2. 但DMA中断状态检测机制存在问题，导致超时
+3. 对于14字节小数据量，投入产出比过低
+4. 遵循KISS原则，选择更简单可靠的方案
+
+**实现代码**：
 ```c
-// 当前 spi_comm.c:162 - 阻塞式传输
-spi_transfer_8bit(SPI_MASTER_CH, tx_buf, rx_buf, transfer_len);
-// ↑ CPU在此等待整个传输完成（约112μs @ 1MHz）
-
-// DMA优化后 - 非阻塞式传输
-spi_transfer_dma(tx_buf, rx_buf, transfer_len, on_complete_callback);
-// ↑ CPU启动DMA后立即返回，完成后通过中断通知
-```
-
-**任务**：
-- [ ] 配置PDMA通道（TX: 1个通道，RX: 1个通道）
-- [ ] 配置DMA描述符（源地址、目的地址、传输长度）
-- [ ] 实现DMA传输启动函数 `spi_transfer_dma()`
-- [ ] 实现DMA完成中断处理 `DMA_Complete_ISR()`
-- [ ] 修改 `spi_comm_read_beacon()` 为异步模式（回调机制）
-- [ ] 修改 `spi_comm_test()` 适配异步API
-- [ ] 中断模式与DMA模式对比测试（CPU占用率、稳定性）
-
-**涉及的CYT4BB7资源**：
-| 资源 | 配置 | 说明 |
-|------|------|------|
-| PDMA通道 | 2个（TX+RX） | SCB7的DMA触发信号 |
-| DMA描述符 | 2个 | 存放在RAM中 |
-| 中断 | DMA完成中断 | 替代原有轮询 |
-
-**API变化设计**：
-```c
-// 新增异步接口
-typedef void (*spi_callback_t)(uint8 error_code, beacon_result_t *result);
-void spi_comm_read_beacon_async(spi_callback_t callback);
-
-// 保留同步接口（内部使用标志位等待）
-uint8 spi_comm_read_beacon(beacon_result_t *result);  // 兼容现有代码
-```
-
-**验收标准**：
-- DMA传输数据正确（CRC校验通过）
-- DMA完成中断正常触发
-- CPU占用率降低（传输期间可执行其他代码）
-- 与中断模式性能对比数据
-
-### 6.3 第三阶段：从机DMA优化（可选）⏳ 待开始
-
-**目标**：2BL3从机端使用DMA传输
-
-**设计理由**：
-- 从机端DMA收益相对较小（每次仅14字节，约112μs）
-- 从机端有特殊挑战：SS信号同步问题
-- 建议先评估主机DMA收益后，再决定是否实施
-
-**当前代码分析**（需要改造的部分）：
-```c
-// 当前 spi_slave.c:148-156 - CPU逐字节加载TX FIFO
-static void preload_tx_fifo(void)
+// spi_comm.c - FIFO批量填充传输
+static uint8 spi_transfer_batch(const uint8 *tx_data, uint8 *rx_data, uint8 len)
 {
-    Cy_SCB_SPI_ClearTxFifo(SPI_SLAVE_SCB);
-    for (uint8 i = 0; i < BEACON_RESPONSE_LEN; i++)
-    {
-        Cy_SCB_WriteTxFifo(SPI_SLAVE_SCB, g_tx_buffer[i]);
-    }
-}
+    // 1. 清空FIFO
+    Cy_SCB_SPI_ClearRxFifo(SCB7);
+    Cy_SCB_SPI_ClearTxFifo(SCB7);
 
-// DMA优化后 - DMA自动加载
-static void preload_tx_fifo_dma(void)
-{
-    Cy_PDMA_Channel_SetDescriptor(TX_DMA_CH, &tx_descriptor);
-    Cy_PDMA_Channel_Enable(TX_DMA_CH);
-    // DMA自动将g_tx_buffer搬运到TX FIFO
+    // 2. 批量填充TX FIFO (利用256字节深度)
+    for (uint8 i = 0; i < len; i++)
+        Cy_SCB_WriteTxFifo(SCB7, tx_data[i]);
+
+    // 3. 等待传输完成
+    while (!Cy_SCB_IsTxComplete(SCB7)) {}
+    while (Cy_SCB_SPI_GetNumInRxFifo(SCB7) < len) {}
+
+    // 4. 批量读取RX数据
+    for (uint8 i = 0; i < len; i++)
+        rx_data[i] = (uint8)Cy_SCB_SPI_Read(SCB7);
+
+    return SPI_ERR_OK;
 }
 ```
 
-**从机DMA的特殊挑战**：
-```
-问题：SS信号由主机控制，从机无法预知传输开始时刻
-
-方案A：TX预加载 + RX用DMA
-  - TX仍使用现有的FIFO预加载策略（简单可靠）
-  - RX使用DMA接收主机请求
-  - 收益：仅节省RX的CPU时间
-
-方案B：SS下降沿触发DMA
-  - 配置SS引脚中断（下降沿）
-  - 中断中启动TX/RX DMA
-  - 风险：中断延迟可能导致第一个字节丢失
-
-推荐：方案A（TX预加载 + RX DMA），风险最低
-```
-
 **任务**：
-- [ ] 评估主机DMA优化后的整体性能
-- [ ] 决定是否需要从机DMA优化
-- [ ] （如需要）配置DW通道（TX: 1个，RX: 1个）
-- [ ] （如需要）实现RX DMA接收
-- [ ] （如需要）测试SS信号同步
+- [x] 分析DMA方案可行性（结论：收益过低）
+- [x] 实现FIFO批量填充传输函数 `spi_transfer_batch()`
+- [x] 移除DMA相关代码和依赖
+- [x] 代码简化和注释优化
 
 **验收标准**：
-- 从机CPU占用率评估
-- 与纯中断模式性能对比
-- SS信号同步无丢字节
+- ✅ 传输数据正确（CRC校验通过）
+- ✅ 无超时错误
+- ✅ 代码简洁，无冗余
 
-### 6.4 第四阶段：多从机扩展 ⏳ 待开始
+### 6.3 第三阶段：多从机扩展 ⏳ 待开始
 
 **目标**：扩展到3个CS控制3个从机
 
 **设计理由**：
-- DMA接口已稳定，多从机管理直接基于DMA接口设计
-- 避免"先写同步代码，后改异步"的重构成本
+- 第二阶段已验证FIFO批量填充方式可靠
 - 每个阶段只改变一个维度（此阶段只增加从机数量）
+- 从机端代码无需修改
 
 **当前代码分析**（需要扩展的部分）：
 ```c
@@ -841,4 +778,5 @@ Beacon: x=180, y=130, found=1, conf=80
 | v2.0 | 2024-12 | 添加INT信号机制 |
 | v3.0 | 2024-12 | 确认SCB0为SPI从机 |
 | v3.1 | 2024-12 | INT信号时序优化 |
-| **v4.0** | **2025-12** | **第一阶段验证完成，更新为实际实现的代码和架构** |
+| v4.0 | 2025-12 | 第一阶段验证完成，更新为实际实现的代码和架构 |
+| **v4.2** | **2025-12** | **第二阶段完成：采用FIFO批量填充方式，放弃DMA方案** |

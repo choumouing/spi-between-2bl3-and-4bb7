@@ -1,39 +1,35 @@
 /*********************************************************************************************************************
  * @file    spi_comm.c
  * @brief   SPI通信模块 - 主机端(4BB7)
- * @details 第二阶段：主机DMA优化
- *          - TX传输使用PDMA进行批量写入TX FIFO
- *          - RX接收使用轮询读取（数据量小，效率更高）
- *          - 添加超时保护机制
+ * @details 采用FIFO批量填充方式实现高效SPI传输
+ *          - 利用SCB7的256字节FIFO深度，一次性填充所有TX数据
+ *          - SPI硬件自动完成全双工传输
+ *          - 传输完成后批量读取RX数据
+ *
+ *          设计依据：
+ *          - 单次传输数据量14字节，远小于FIFO深度(256字节)
+ *          - @1MHz传输仅需112μs，DMA收益可忽略
+ *          - 遵循KISS/YAGNI原则，简化设计
  ********************************************************************************************************************/
 
 #include "spi_comm.h"
 #include "zf_common_headfile.h"
-#include "dma/cy_pdma.h"
 #include "scb/cy_scb_spi.h"
 #include <string.h>
 
-//==================================================== DMA配置 ====================================================
-// DMA通道分配 (使用DW0通道0用于TX)
-#define DMA_TX_CH           0
-
-// SCB7寄存器地址 (SPI_0对应SCB7)
-#define SCB7_TX_FIFO_WR     ((volatile uint32_t*)&SCB7->unTX_FIFO_WR.u32Register)
-
+//==================================================== 超时配置 ====================================================
 // 超时计数 (约10ms @ 250MHz，循环开销约10-20周期)
-#define DMA_TIMEOUT_COUNT   100000
-
-//==================================================== DMA变量 ====================================================
-// DMA描述符 (必须4字节对齐)
-CY_ALIGN(4) static cy_stc_pdma_descr_t g_tx_descr;
-
-// DMA缓冲区 (使用volatile防止编译器优化)
-static volatile uint8 g_tx_buf[MAX_FRAME_SIZE];
+#define TRANSFER_TIMEOUT_COUNT  100000
 
 //==================================================== 内部函数 ====================================================
 
 /**
  * @brief  计算CRC16校验值 (Modbus CRC16)
+ * @param  data 数据指针
+ * @param  len  数据长度
+ * @return CRC16校验值
+ *
+ * @note   算法: 多项式0xA001, 初始值0xFFFF
  */
 static uint16 calc_crc16(const uint8 *data, uint16 len)
 {
@@ -56,7 +52,9 @@ static uint16 calc_crc16(const uint8 *data, uint16 len)
  * @brief  构建请求帧
  * @param  cmd     命令字节
  * @param  buffer  输出缓冲区
- * @return 帧长度
+ * @return 帧长度 (固定8字节)
+ *
+ * @note   帧结构: HEAD(2) + CMD(1) + LEN(2) + CRC(2) + TAIL(1) = 8字节
  */
 static uint8 build_request_frame(uint8 cmd, uint8 *buffer)
 {
@@ -68,9 +66,10 @@ static uint8 build_request_frame(uint8 cmd, uint8 *buffer)
     buffer[3] = 0;  // LEN高字节
     buffer[4] = 0;  // LEN低字节 (请求帧无数据)
 
+    // CRC计算范围: CMD + LEN (3字节)
     crc = calc_crc16(&buffer[2], 3);
-    buffer[5] = (uint8)(crc & 0xFF);
-    buffer[6] = (uint8)(crc >> 8);
+    buffer[5] = (uint8)(crc & 0xFF);        // CRC低字节
+    buffer[6] = (uint8)(crc >> 8);          // CRC高字节
     buffer[7] = FRAME_TAIL;
 
     return 8;
@@ -130,64 +129,23 @@ static uint8 parse_response_frame(const uint8 *rx_buf, uint8 len, uint8 *data_ou
 }
 
 /**
- * @brief  初始化TX DMA描述符
- * @note   配置为1D传输，软件触发后一次性将数据写入TX FIFO
- */
-static void init_dma_descriptor(void)
-{
-    cy_stc_pdma_descr_config_t tx_cfg = {
-        .deact          = CY_PDMA_RETDIG_IM,            // 立即重触发模式
-        .intrType       = CY_PDMA_INTR_DESCR_CMPLT,     // 描述符完成时产生中断
-        .trigoutType    = CY_PDMA_TRIGOUT_DESCR_CMPLT,  // 描述符完成时触发输出
-        .chStateAtCmplt = CY_PDMA_CH_DISABLED,          // 传输完成后禁用通道
-        .triginType     = CY_PDMA_TRIGIN_DESCR,         // 触发整个描述符传输
-        .dataSize       = CY_PDMA_BYTE,                 // 字节传输
-        .srcTxfrSize    = CY_PDMA_TXFR_SIZE_DATA_SIZE,  // 源传输大小=数据大小
-        .destTxfrSize   = CY_PDMA_TXFR_SIZE_DATA_SIZE,  // 目标传输大小=数据大小
-        .descrType      = CY_PDMA_1D_TRANSFER,          // 1D传输模式
-        .srcAddr        = (void*)g_tx_buf,              // 源地址：RAM缓冲区
-        .destAddr       = (void*)SCB7_TX_FIFO_WR,       // 目标地址：TX FIFO
-        .srcXincr       = 1,                            // 源地址每次递增1
-        .destXincr      = 0,                            // 目标地址固定（FIFO寄存器）
-        .xCount         = BEACON_RESPONSE_LEN,          // 初始传输字节数
-        .srcYincr       = 0,
-        .destYincr      = 0,
-        .yCount         = 0,
-        .descrNext      = NULL                          // 无链接描述符
-    };
-    Cy_PDMA_Descr_Init(&g_tx_descr, &tx_cfg);
-}
-
-/**
- * @brief  初始化DMA通道
- */
-static void init_dma_channel(void)
-{
-    cy_stc_pdma_chnl_config_t tx_chnl_cfg = {
-        .PDMA_Descriptor = &g_tx_descr,
-        .preemptable     = 0,                           // 不可抢占
-        .priority        = 0,                           // 最高优先级
-        .enable          = 0,                           // 初始禁用，传输时启用
-    };
-    Cy_PDMA_Chnl_Init(DW0, DMA_TX_CH, &tx_chnl_cfg);
-
-    // 使能DW0模块
-    Cy_PDMA_Enable(DW0);
-}
-
-/**
- * @brief  使用DMA执行SPI全双工传输
+ * @brief  执行SPI全双工传输 (FIFO批量填充方式)
  * @param  tx_data  发送数据指针
  * @param  rx_data  接收数据指针
  * @param  len      传输长度
- * @return 0-成功, 非0-超时
+ * @return 0-成功, 非0-错误码
  *
  * @note   传输策略:
- *         - TX: 使用DMA将数据批量写入TX FIFO
- *         - RX: SPI全双工特性，传输完成后从RX FIFO读取
- *         - 对于14字节的小数据量，此方案简单高效
+ *         1. 清空RX/TX FIFO
+ *         2. 批量填充TX FIFO (利用256字节深度)
+ *         3. 等待SPI硬件完成传输 (全双工，自动接收)
+ *         4. 批量读取RX FIFO
+ *
+ *         性能分析 (@1MHz, 14字节):
+ *         - 传输时间: 14 × 8 / 1MHz = 112μs
+ *         - CPU等待时间: ~112μs (可接受)
  */
-static uint8 spi_transfer_dma(const uint8 *tx_data, uint8 *rx_data, uint8 len)
+static uint8 spi_transfer_batch(const uint8 *tx_data, uint8 *rx_data, uint8 len)
 {
     uint32 timeout;
 
@@ -195,78 +153,39 @@ static uint8 spi_transfer_dma(const uint8 *tx_data, uint8 *rx_data, uint8 len)
     if (len == 0 || len > MAX_FRAME_SIZE)
         return SPI_ERR_DATA_SIZE;
 
-    // 复制发送数据到DMA缓冲区
-    memcpy((void*)g_tx_buf, tx_data, len);
-
-    // 更新描述符传输长度 (X_COUNT = N-1)
-    g_tx_descr.unPDMA_DESCR_X_CTL.stcField.u8X_COUNT = (uint8)(len - 1);
-
     // 清空SPI FIFO
     Cy_SCB_SPI_ClearRxFifo(SCB7);
     Cy_SCB_SPI_ClearTxFifo(SCB7);
 
-    // 重新设置描述符指针
-    Cy_PDMA_Chnl_SetDescr(DW0, DMA_TX_CH, &g_tx_descr);
-
-    // 清除DMA中断状态
-    Cy_PDMA_Chnl_ClearInterrupt(DW0, DMA_TX_CH);
-
-    // 启用DMA通道
-    Cy_PDMA_Chnl_Enable(DW0, DMA_TX_CH);
-
-    // 触发TX DMA传输
-#if defined(CPUSS_SW_TR_PRESENT) && (CPUSS_SW_TR_PRESENT == 1)
-    // 使用软件触发启动DMA
-    Cy_PDMA_Chnl_SetSwTrigger(DW0, DMA_TX_CH);
-#else
-    // 备用方案：直接写入TX FIFO (无DMA硬件触发支持时)
+    // 批量填充TX FIFO
+    // SCB7 FIFO深度256字节，14字节数据一次性填入
     for (uint8 i = 0; i < len; i++)
     {
-        Cy_SCB_WriteTxFifo(SCB7, g_tx_buf[i]);
-    }
-#endif
-
-    // 等待TX DMA完成 (带超时保护)
-    timeout = DMA_TIMEOUT_COUNT;
-    while (!Cy_PDMA_Chnl_GetInterruptStatus(DW0, DMA_TX_CH))
-    {
-        if (--timeout == 0)
-        {
-            Cy_PDMA_Chnl_Disable(DW0, DMA_TX_CH);
-            return SPI_ERR_TIMEOUT;
-        }
+        Cy_SCB_WriteTxFifo(SCB7, tx_data[i]);
     }
 
     // 等待SPI传输完成 (TX FIFO清空且移位寄存器空闲)
-    timeout = DMA_TIMEOUT_COUNT;
+    timeout = TRANSFER_TIMEOUT_COUNT;
     while (!Cy_SCB_IsTxComplete(SCB7))
     {
         if (--timeout == 0)
-        {
-            Cy_PDMA_Chnl_Disable(DW0, DMA_TX_CH);
             return SPI_ERR_TIMEOUT;
-        }
     }
 
     // 等待所有RX数据接收完毕
-    timeout = DMA_TIMEOUT_COUNT;
+    // SPI全双工: 发送N字节必然接收N字节
+    timeout = TRANSFER_TIMEOUT_COUNT;
     while (Cy_SCB_SPI_GetNumInRxFifo(SCB7) < len)
     {
         if (--timeout == 0)
-        {
-            Cy_PDMA_Chnl_Disable(DW0, DMA_TX_CH);
             return SPI_ERR_TIMEOUT;
-        }
     }
 
-    // 从RX FIFO读取接收数据
+    // 批量读取RX数据
     for (uint8 i = 0; i < len; i++)
     {
         rx_data[i] = (uint8)Cy_SCB_SPI_Read(SCB7);
     }
-
-    // 禁用DMA通道
-    Cy_PDMA_Chnl_Disable(DW0, DMA_TX_CH);
 
     return SPI_ERR_OK;
 }
@@ -284,10 +203,6 @@ void spi_comm_init(void)
 
     // 初始化INT检测引脚 (输入，检测从机数据就绪)
     gpio_init(SPI_INT_PIN, GPI, GPIO_LOW, GPI_PULL_DOWN);
-
-    // 初始化DMA
-    init_dma_descriptor();
-    init_dma_channel();
 }
 
 uint8 spi_comm_data_ready(void)
@@ -315,7 +230,7 @@ uint8 spi_comm_read_beacon(beacon_result_t *result)
     // 计算传输长度 (取请求帧和响应帧的较大值)
     transfer_len = (tx_len > BEACON_RESPONSE_LEN) ? tx_len : BEACON_RESPONSE_LEN;
 
-    // 填充发送缓冲区 (补齐到传输长度)
+    // 填充发送缓冲区 (补齐到传输长度，0xFF为空闲字节)
     memset(&tx_buf[tx_len], 0xFF, transfer_len - tx_len);
 
     // 拉低CS，选中从机
@@ -325,7 +240,7 @@ uint8 spi_comm_read_beacon(beacon_result_t *result)
     system_delay_us(SPI_CS_SETUP_DELAY_US);
 
     // 执行SPI全双工传输
-    ret = spi_transfer_dma(tx_buf, rx_buf, transfer_len);
+    ret = spi_transfer_batch(tx_buf, rx_buf, transfer_len);
 
     // 拉高CS，释放从机
     gpio_high(SPI_CS_PIN);
