@@ -1,11 +1,152 @@
 /*********************************************************************************************************************
  * @file    spi_comm.c
- * @brief   SPI通信模块 - 主机端(4BB7)
- * @details 第一阶段：基础通信验证（中断模式）
+ * @brief   SPI通信模块 - 主机端(4BB7) - DMA优化版
+ * @details 第二阶段：使用DW1 PDMA实现SPI主机端传输
+ *
+ * DMA配置说明（基于cyt4bb_config.h官方定义）：
+ *   - SCB7的TX/RX触发连接到DW1（非DW0）
+ *   - TX: TRIG_OUT_1TO1_2_SCB_TX_TO_PDMA17 → DW1通道30
+ *   - RX: TRIG_OUT_1TO1_2_SCB_RX_TO_PDMA17 → DW1通道31
+ *   - 使用1-to-1触发器，无需复杂的TrigMux路由
  ********************************************************************************************************************/
 
 #include "spi_comm.h"
 #include "zf_common_headfile.h"
+#include "scb/cy_scb_spi.h"
+#include "dma/cy_pdma.h"
+#include "trigmux/cy_trigmux.h"
+
+//==================================================== DMA配置 ====================================================
+// DMA硬件资源定义（基于cyt4bb_config.h官方定义）
+#define DMA_HW                  DW1             // SCB7使用DW1（非DW0）
+#define DMA_TX_CH               30              // dw1_tr_in[30] 对应SCB7 TX
+#define DMA_RX_CH               31              // dw1_tr_in[31] 对应SCB7 RX
+
+// SCB7 FIFO寄存器地址（基于cyreg_scb.h）
+#define SCB7_TX_FIFO_WR_ADDR    0x40670240UL
+#define SCB7_RX_FIFO_RD_ADDR    0x40670340UL
+
+// DMA描述符（必须4字节对齐）
+CY_ALIGN(4) static cy_stc_pdma_descr_t g_dma_tx_descr;
+CY_ALIGN(4) static cy_stc_pdma_descr_t g_dma_rx_descr;
+
+// DMA初始化标志
+static uint8 g_dma_initialized = 0;
+
+//==================================================== DMA内部函数 ====================================================
+
+/**
+ * @brief  初始化SPI DMA模块
+ * @note   配置DW1的TX/RX通道，连接1-to-1触发器
+ */
+static void spi_dma_init(void)
+{
+    if (g_dma_initialized)
+        return;
+
+    // 1. 使能DW1控制器
+    Cy_PDMA_Enable(DMA_HW);
+
+    // 2. 配置1-to-1触发器（基于cyt4bb_config.h定义）
+    // SCB7 TX请求 → DW1通道30
+    Cy_TrigMux_Connect1To1(TRIG_OUT_1TO1_2_SCB_TX_TO_PDMA17,
+                           CY_TR_MUX_TR_INV_DISABLE,
+                           TRIGGER_TYPE_LEVEL,
+                           0);  // 不在调试模式下冻结
+
+    // SCB7 RX请求 → DW1通道31
+    Cy_TrigMux_Connect1To1(TRIG_OUT_1TO1_2_SCB_RX_TO_PDMA17,
+                           CY_TR_MUX_TR_INV_DISABLE,
+                           TRIGGER_TYPE_LEVEL,
+                           0);
+
+    g_dma_initialized = 1;
+}
+
+/**
+ * @brief  配置并启动DMA传输
+ * @param  tx_data  发送数据缓冲区
+ * @param  rx_data  接收数据缓冲区
+ * @param  len      传输长度（字节）
+ * @return 0-成功，非0-失败
+ */
+static uint8 dma_transfer(const uint8 *tx_data, uint8 *rx_data, uint8 len)
+{
+    cy_stc_pdma_descr_config_t descr_cfg;
+    cy_stc_pdma_chnl_config_t  chnl_cfg;
+    uint32 timeout;
+
+    // 清空RX FIFO，避免读取到残留数据
+    Cy_SCB_SPI_ClearRxFifo(SCB7);
+
+    // ===== 配置TX DMA描述符 =====
+    descr_cfg.deact          = CY_PDMA_TRIG_DEACT_NO_WAIT;   // 不等待触发去激活（脉冲触发）
+    descr_cfg.intrType       = CY_PDMA_INTR_DESCR_CMPLT;   // 描述符完成时产生中断
+    descr_cfg.trigoutType    = CY_PDMA_TRIGOUT_DESCR_CMPLT;// 完成时输出触发
+    descr_cfg.triginType     = CY_PDMA_TRIGIN_1ELEMENT;    // 每个触发传输1个元素
+    descr_cfg.dataSize       = CY_PDMA_BYTE;               // 8位数据宽度
+    descr_cfg.srcTxfrSize    = CY_PDMA_TXFR_SIZE_DATA_SIZE;// 源传输大小=数据大小
+    descr_cfg.destTxfrSize   = CY_PDMA_TXFR_SIZE_WORD;     // 目的传输大小=字（FIFO要求）
+    descr_cfg.descrType      = CY_PDMA_1D_TRANSFER;        // 1D传输
+    descr_cfg.srcAddr        = (void *)tx_data;            // 源：内存缓冲区
+    descr_cfg.destAddr       = (void *)SCB7_TX_FIFO_WR_ADDR;// 目的：TX FIFO
+    descr_cfg.srcXincr       = 1;                          // 源地址递增
+    descr_cfg.destXincr      = 0;                          // 目的地址不变（固定FIFO）
+    descr_cfg.xCount         = len;                        // 传输元素数量
+    descr_cfg.descrNext      = NULL;                       // 无下一描述符
+    descr_cfg.chStateAtCmplt = CY_PDMA_CH_DISABLED;        // 完成后禁用通道
+
+    Cy_PDMA_Descr_Init(&g_dma_tx_descr, &descr_cfg);
+
+    // ===== 配置RX DMA描述符 =====
+    descr_cfg.srcTxfrSize    = CY_PDMA_TXFR_SIZE_WORD;     // 源传输大小=字（FIFO）
+    descr_cfg.destTxfrSize   = CY_PDMA_TXFR_SIZE_DATA_SIZE;// 目的传输大小=数据大小
+    descr_cfg.srcAddr        = (void *)SCB7_RX_FIFO_RD_ADDR;// 源：RX FIFO
+    descr_cfg.destAddr       = (void *)rx_data;            // 目的：内存缓冲区
+    descr_cfg.srcXincr       = 0;                          // 源地址不变（固定FIFO）
+    descr_cfg.destXincr      = 1;                          // 目的地址递增
+
+    Cy_PDMA_Descr_Init(&g_dma_rx_descr, &descr_cfg);
+
+    // ===== 配置并使能DMA通道 =====
+    chnl_cfg.PDMA_Descriptor = &g_dma_tx_descr;
+    chnl_cfg.preemptable     = 0;
+    chnl_cfg.priority        = 0;
+    chnl_cfg.enable          = 1;
+
+    // 清除中断状态
+    Cy_PDMA_Chnl_ClearInterrupt(DMA_HW, DMA_TX_CH);
+    Cy_PDMA_Chnl_ClearInterrupt(DMA_HW, DMA_RX_CH);
+
+    // 初始化TX通道
+    Cy_PDMA_Chnl_Init(DMA_HW, DMA_TX_CH, &chnl_cfg);
+    Cy_PDMA_Chnl_SetInterruptMask(DMA_HW, DMA_TX_CH);
+
+    // 初始化RX通道
+    chnl_cfg.PDMA_Descriptor = &g_dma_rx_descr;
+    Cy_PDMA_Chnl_Init(DMA_HW, DMA_RX_CH, &chnl_cfg);
+    Cy_PDMA_Chnl_SetInterruptMask(DMA_HW, DMA_RX_CH);
+
+    // ===== 等待传输完成 =====
+    // RX DMA完成意味着所有数据都已传输（因为SPI是全双工的）
+    timeout = DMA_TIMEOUT_COUNT;
+    while (Cy_PDMA_Chnl_GetInterruptStatusMasked(DMA_HW, DMA_RX_CH) == 0)
+    {
+        if (--timeout == 0)
+        {
+            // 超时，禁用通道
+            Cy_PDMA_Chnl_Disable(DMA_HW, DMA_TX_CH);
+            Cy_PDMA_Chnl_Disable(DMA_HW, DMA_RX_CH);
+            return SPI_ERR_TIMEOUT;
+        }
+    }
+
+    // 清除中断状态
+    Cy_PDMA_Chnl_ClearInterrupt(DMA_HW, DMA_TX_CH);
+    Cy_PDMA_Chnl_ClearInterrupt(DMA_HW, DMA_RX_CH);
+
+    return SPI_ERR_OK;
+}
 
 //==================================================== 内部函数 ====================================================
 
@@ -119,6 +260,9 @@ void spi_comm_init(void)
 
     // 初始化INT检测引脚 (输入，检测从机拉高表示数据就绪)
     gpio_init(SPI_INT_PIN, GPI, GPIO_LOW, GPI_PULL_DOWN);
+
+    // 初始化DMA (DW1 PDMA + 1-to-1触发器)
+    spi_dma_init();
 }
 
 uint8 spi_comm_data_ready(void)
@@ -158,8 +302,13 @@ uint8 spi_comm_read_beacon(beacon_result_t *result)
     // CS建立时间延时，确保从机有时间准备TX FIFO
     system_delay_us(SPI_CS_SETUP_DELAY_US);
 
-    // 全双工传输
-    spi_transfer_8bit(SPI_MASTER_CH, tx_buf, rx_buf, transfer_len);
+    // 全双工DMA传输 (替代原spi_transfer_8bit)
+    ret = dma_transfer(tx_buf, rx_buf, transfer_len);
+    if (ret != SPI_ERR_OK)
+    {
+        gpio_high(SPI_CS_PIN);
+        return ret;
+    }
 
     // 拉高CS，释放从机
     gpio_high(SPI_CS_PIN);

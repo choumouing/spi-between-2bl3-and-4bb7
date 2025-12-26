@@ -1,7 +1,7 @@
 /*********************************************************************************************************************
  * @file    spi_comm.h
- * @brief   SPI通信模块 - 主机端(4BB7)头文件
- * @details 实现与CYT2BL3从机的SPI通信
+ * @brief   SPI通信模块 - 主机端(4BB7)头文件 - DMA优化版
+ * @details 实现与CYT2BL3从机的SPI通信，使用DW1 PDMA
  ********************************************************************************************************************/
 
 #ifndef _SPI_COMM_H_
@@ -50,10 +50,15 @@
 #define SPI_ERR_CRC_MISMATCH    5               // CRC校验失败
 #define SPI_ERR_INCOMPLETE      6               // 帧不完整
 #define SPI_ERR_NULL_PTR        7               // 空指针参数
+#define SPI_ERR_TIMEOUT         8               // DMA传输超时
+#define SPI_ERR_DMA_INIT        9               // DMA初始化失败
 #define SPI_ERR_DATA_SIZE       10              // 数据大小不匹配
 
 // CS延时参数 (微秒)
 #define SPI_CS_SETUP_DELAY_US   5               // CS拉低后到传输开始的延时
+
+// DMA超时计数
+#define DMA_TIMEOUT_COUNT       1000000         // DMA传输超时计数
 
 // 状态打印间隔 (循环次数)
 #define STATUS_PRINT_INTERVAL   1000000
