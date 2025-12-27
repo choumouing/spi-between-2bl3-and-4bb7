@@ -26,8 +26,6 @@
 #define FRAME_HEAD_1        0xAA
 #define FRAME_HEAD_2        0x55
 #define FRAME_TAIL          0xED
-
-#define CMD_PING            0x01
 #define CMD_GET_BEACON      0x10
 
 #define MAX_DATA_SIZE       32

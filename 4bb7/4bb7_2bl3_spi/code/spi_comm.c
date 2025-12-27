@@ -1,15 +1,11 @@
 /*********************************************************************************************************************
  * @file    spi_comm.c
  * @brief   SPI通信模块 - 主机端(4BB7)
- * @details 采用FIFO批量填充方式实现高效SPI传输
+ * @details 采用FIFO批量填充方式实现高效SPI传输，支持3个从机
  *          - 利用SCB7的256字节FIFO深度，一次性填充所有TX数据
  *          - SPI硬件自动完成全双工传输
  *          - 传输完成后批量读取RX数据
- *
- *          设计依据：
- *          - 单次传输数据量14字节，远小于FIFO深度(256字节)
- *          - @1MHz传输仅需112μs，DMA收益可忽略
- *          - 遵循KISS/YAGNI原则，简化设计
+ *          - 事件驱动：检测各从机INT信号，有就绪的就通信
  ********************************************************************************************************************/
 
 #include "spi_comm.h"
@@ -21,6 +17,25 @@
 // 超时计数 (约10ms @ 250MHz，循环开销约10-20周期)
 #define TRANSFER_TIMEOUT_COUNT  100000
 
+//==================================================== 引脚配置表 ====================================================
+// 各从机的CS引脚
+static const gpio_pin_enum g_cs_pins[SLAVE_COUNT] = {
+    SPI_CS1_PIN,    // 从机1: P02_3
+    SPI_CS2_PIN,    // 从机2: P01_0
+    SPI_CS3_PIN     // 从机3: P19_0
+};
+
+// 各从机的INT引脚
+static const gpio_pin_enum g_int_pins[SLAVE_COUNT] = {
+    SPI_INT1_PIN,   // 从机1: P02_4
+    SPI_INT2_PIN,   // 从机2: P01_1
+    SPI_INT3_PIN    // 从机3: P19_1
+};
+
+//==================================================== 内部变量 ====================================================
+// 各从机状态
+static slave_status_t g_slave_status[SLAVE_COUNT];
+
 //==================================================== 内部函数 ====================================================
 
 /**
@@ -28,8 +43,6 @@
  * @param  data 数据指针
  * @param  len  数据长度
  * @return CRC16校验值
- *
- * @note   算法: 多项式0xA001, 初始值0xFFFF
  */
 static uint16 calc_crc16(const uint8 *data, uint16 len)
 {
@@ -53,8 +66,6 @@ static uint16 calc_crc16(const uint8 *data, uint16 len)
  * @param  cmd     命令字节
  * @param  buffer  输出缓冲区
  * @return 帧长度 (固定8字节)
- *
- * @note   帧结构: HEAD(2) + CMD(1) + LEN(2) + CRC(2) + TAIL(1) = 8字节
  */
 static uint8 build_request_frame(uint8 cmd, uint8 *buffer)
 {
@@ -68,8 +79,8 @@ static uint8 build_request_frame(uint8 cmd, uint8 *buffer)
 
     // CRC计算范围: CMD + LEN (3字节)
     crc = calc_crc16(&buffer[2], 3);
-    buffer[5] = (uint8)(crc & 0xFF);        // CRC低字节
-    buffer[6] = (uint8)(crc >> 8);          // CRC高字节
+    buffer[5] = (uint8)(crc & 0xFF);
+    buffer[6] = (uint8)(crc >> 8);
     buffer[7] = FRAME_TAIL;
 
     return 8;
@@ -82,20 +93,15 @@ static uint8 build_request_frame(uint8 cmd, uint8 *buffer)
  * @param  data_out  数据输出缓冲区
  * @param  data_len  数据长度输出
  * @return 错误码
- *
- * @note   帧结构: HEAD(2) + CMD(1) + LEN(2) + DATA(n) + CRC(2) + TAIL(1)
- *         索引:   [0-1]    [2]      [3-4]    [5~5+n-1]  [5+n~6+n]  [7+n]
  */
 static uint8 parse_response_frame(const uint8 *rx_buf, uint8 len, uint8 *data_out, uint8 *data_len)
 {
     uint16 crc_calc, crc_recv;
     uint16 payload_len;
 
-    // 检查最小帧长度
     if (len < FRAME_OVERHEAD)
         return SPI_ERR_FRAME_SHORT;
 
-    // 检查帧头
     if (rx_buf[0] != FRAME_HEAD_1 || rx_buf[1] != FRAME_HEAD_2)
         return SPI_ERR_INVALID_HEAD;
 
@@ -104,21 +110,18 @@ static uint8 parse_response_frame(const uint8 *rx_buf, uint8 len, uint8 *data_ou
     if (payload_len > MAX_DATA_SIZE)
         return SPI_ERR_PAYLOAD_LONG;
 
-    // 检查完整帧长度
     if (len < FRAME_OVERHEAD + payload_len)
         return SPI_ERR_INCOMPLETE;
 
-    // 检查帧尾 (索引: 5 + payload_len + 2 = 7 + payload_len)
     if (rx_buf[7 + payload_len] != FRAME_TAIL)
         return SPI_ERR_INVALID_TAIL;
 
-    // CRC校验 (计算范围: CMD + LEN + DATA)
+    // CRC校验
     crc_calc = calc_crc16(&rx_buf[2], 3 + payload_len);
     crc_recv = rx_buf[5 + payload_len] | ((uint16)rx_buf[6 + payload_len] << 8);
     if (crc_calc != crc_recv)
         return SPI_ERR_CRC_MISMATCH;
 
-    // 复制数据
     *data_len = (uint8)payload_len;
     if (payload_len > 0)
     {
@@ -134,22 +137,11 @@ static uint8 parse_response_frame(const uint8 *rx_buf, uint8 len, uint8 *data_ou
  * @param  rx_data  接收数据指针
  * @param  len      传输长度
  * @return 0-成功, 非0-错误码
- *
- * @note   传输策略:
- *         1. 清空RX/TX FIFO
- *         2. 批量填充TX FIFO (利用256字节深度)
- *         3. 等待SPI硬件完成传输 (全双工，自动接收)
- *         4. 批量读取RX FIFO
- *
- *         性能分析 (@1MHz, 14字节):
- *         - 传输时间: 14 × 8 / 1MHz = 112μs
- *         - CPU等待时间: ~112μs (可接受)
  */
 static uint8 spi_transfer_batch(const uint8 *tx_data, uint8 *rx_data, uint8 len)
 {
     uint32 timeout;
 
-    // 参数校验
     if (len == 0 || len > MAX_FRAME_SIZE)
         return SPI_ERR_DATA_SIZE;
 
@@ -158,13 +150,12 @@ static uint8 spi_transfer_batch(const uint8 *tx_data, uint8 *rx_data, uint8 len)
     Cy_SCB_SPI_ClearTxFifo(SCB7);
 
     // 批量填充TX FIFO
-    // SCB7 FIFO深度256字节，14字节数据一次性填入
     for (uint8 i = 0; i < len; i++)
     {
         Cy_SCB_WriteTxFifo(SCB7, tx_data[i]);
     }
 
-    // 等待SPI传输完成 (TX FIFO清空且移位寄存器空闲)
+    // 等待SPI传输完成
     timeout = TRANSFER_TIMEOUT_COUNT;
     while (!Cy_SCB_IsTxComplete(SCB7))
     {
@@ -173,7 +164,6 @@ static uint8 spi_transfer_batch(const uint8 *tx_data, uint8 *rx_data, uint8 len)
     }
 
     // 等待所有RX数据接收完毕
-    // SPI全双工: 发送N字节必然接收N字节
     timeout = TRANSFER_TIMEOUT_COUNT;
     while (Cy_SCB_SPI_GetNumInRxFifo(SCB7) < len)
     {
@@ -194,23 +184,35 @@ static uint8 spi_transfer_batch(const uint8 *tx_data, uint8 *rx_data, uint8 len)
 
 void spi_comm_init(void)
 {
-    // 初始化SPI主机 (CS使用GPIO软件控制)
+    // 初始化SPI主机 (不使用硬件CS，使用GPIO软件控制)
     spi_init(SPI_MASTER_CH, SPI_MODE0, SPI_MASTER_BAUD,
              SPI_MASTER_CLK, SPI_MASTER_MOSI, SPI_MASTER_MISO, SPI_CS_NULL);
 
-    // 初始化CS引脚 (输出高电平，空闲状态)
-    gpio_init(SPI_CS_PIN, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    // 初始化所有从机的CS引脚 (输出高电平，空闲状态)
+    for (uint8 i = 0; i < SLAVE_COUNT; i++)
+    {
+        gpio_init(g_cs_pins[i], GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    }
 
-    // 初始化INT检测引脚 (输入，检测从机数据就绪)
-    gpio_init(SPI_INT_PIN, GPI, GPIO_LOW, GPI_PULL_DOWN);
+    // 初始化所有从机的INT检测引脚 (输入，下拉)
+    for (uint8 i = 0; i < SLAVE_COUNT; i++)
+    {
+        gpio_init(g_int_pins[i], GPI, GPIO_LOW, GPI_PULL_DOWN);
+    }
+
+    // 初始化从机状态
+    memset(g_slave_status, 0, sizeof(g_slave_status));
 }
 
-uint8 spi_comm_data_ready(void)
+uint8 spi_comm_data_ready(slave_id_t id)
 {
-    return gpio_get_level(SPI_INT_PIN);
+    if (id >= SLAVE_COUNT)
+        return 0;
+
+    return gpio_get_level(g_int_pins[id]);
 }
 
-uint8 spi_comm_read_beacon(beacon_result_t *result)
+uint8 spi_comm_read_beacon(slave_id_t id, beacon_result_t *result)
 {
     uint8 tx_buf[MAX_FRAME_SIZE];
     uint8 rx_buf[MAX_FRAME_SIZE];
@@ -219,33 +221,35 @@ uint8 spi_comm_read_beacon(beacon_result_t *result)
     uint8 tx_len;
     uint8 transfer_len;
     uint8 ret;
+    gpio_pin_enum cs_pin;
 
-    // 空指针检查
+    // 参数检查
+    if (id >= SLAVE_COUNT)
+        return SPI_ERR_INVALID_SLAVE;
     if (result == NULL)
         return SPI_ERR_NULL_PTR;
+
+    cs_pin = g_cs_pins[id];
 
     // 构建请求帧
     tx_len = build_request_frame(CMD_GET_BEACON, tx_buf);
 
-    // 计算传输长度 (取请求帧和响应帧的较大值)
+    // 计算传输长度
     transfer_len = (tx_len > BEACON_RESPONSE_LEN) ? tx_len : BEACON_RESPONSE_LEN;
 
-    // 填充发送缓冲区 (补齐到传输长度，0xFF为空闲字节)
+    // 填充发送缓冲区
     memset(&tx_buf[tx_len], 0xFF, transfer_len - tx_len);
 
     // 拉低CS，选中从机
-    gpio_low(SPI_CS_PIN);
-
-    // CS建立时间延时 (确保从机准备好)
+    gpio_low(cs_pin);
     system_delay_us(SPI_CS_SETUP_DELAY_US);
 
-    // 执行SPI全双工传输
+    // 执行SPI传输
     ret = spi_transfer_batch(tx_buf, rx_buf, transfer_len);
 
     // 拉高CS，释放从机
-    gpio_high(SPI_CS_PIN);
+    gpio_high(cs_pin);
 
-    // 检查传输结果
     if (ret != SPI_ERR_OK)
         return ret;
 
@@ -254,7 +258,6 @@ uint8 spi_comm_read_beacon(beacon_result_t *result)
     if (ret != SPI_ERR_OK)
         return ret;
 
-    // 验证数据长度
     if (data_len != BEACON_DATA_SIZE)
         return SPI_ERR_DATA_SIZE;
 
@@ -267,31 +270,38 @@ uint8 spi_comm_read_beacon(beacon_result_t *result)
     return SPI_ERR_OK;
 }
 
-void spi_comm_test(void)
+const slave_status_t* spi_comm_get_status(slave_id_t id)
 {
-    static uint32 loop_count = 0;
+    if (id >= SLAVE_COUNT)
+        return NULL;
+
+    return &g_slave_status[id];
+}
+
+void spi_comm_task(void)
+{
     beacon_result_t beacon;
 
-    // 检测INT信号
-    if (spi_comm_data_ready())
+    // 轮询所有从机，检测INT信号
+    for (uint8 i = 0; i < SLAVE_COUNT; i++)
     {
-        uint8 ret = spi_comm_read_beacon(&beacon);
-        if (ret == SPI_ERR_OK)
+        if (spi_comm_data_ready((slave_id_t)i))
         {
-            printf("Beacon: x=%d, y=%d, found=%d, conf=%d\r\n",
-                   beacon.center_x, beacon.center_y, beacon.found, beacon.confidence);
-        }
-        else
-        {
-            printf("Read err=%d\r\n", ret);
-        }
-    }
+            uint8 ret = spi_comm_read_beacon((slave_id_t)i, &beacon);
+            if (ret == SPI_ERR_OK)
+            {
+                // 更新从机状态
+                g_slave_status[i].online = 1;
+                g_slave_status[i].beacon = beacon;
 
-    // 周期性打印状态
-    loop_count++;
-    if (loop_count >= STATUS_PRINT_INTERVAL)
-    {
-        loop_count = 0;
-        printf("INT=%d\r\n", spi_comm_data_ready());
+                printf("S%d: x=%d, y=%d, found=%d, conf=%d\r\n",
+                       i + 1, beacon.center_x, beacon.center_y,
+                       beacon.found, beacon.confidence);
+            }
+            else
+            {
+                printf("S%d: err=%d\r\n", i + 1, ret);
+            }
+        }
     }
 }

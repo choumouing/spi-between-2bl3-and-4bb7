@@ -22,13 +22,13 @@ int main(void)
     clock_init(SYSTEM_CLOCK_250M);      // 时钟配置及系统初始化
     debug_init();                       // 调试串口信息初始化
 
-    // SPI通信初始化
+    // SPI通信初始化 (3个从机)
     spi_comm_init();
-    printf("4BB7 SPI Master Ready\r\n");
+    printf("4BB7 SPI Master Ready (3 slaves)\r\n");
 
     while(true)
     {
-        // SPI通信测试
-        spi_comm_test();
+        // 从机管理任务：轮询所有从机INT信号并通信
+        spi_comm_task();
     }
 }
