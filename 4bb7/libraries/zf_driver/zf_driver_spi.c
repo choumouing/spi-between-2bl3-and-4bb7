@@ -1,37 +1,37 @@
 /*********************************************************************************************************************
-* CYT4BB Opensourec Library ¼´£¨ CYT4BB ¿ªÔ´¿â£©ÊÇÒ»¸ö»ùÓÚ¹Ù·½ SDK ½Ó¿ÚµÄµÚÈý·½¿ªÔ´¿â
-* Copyright (c) 2022 SEEKFREE Öð·É¿Æ¼¼
+* CYT4BB Opensourec Library ï¿½ï¿½ï¿½ï¿½ CYT4BB ï¿½ï¿½Ô´ï¿½â£©ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ú¹Ù·ï¿½ SDK ï¿½Ó¿ÚµÄµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½
+* Copyright (c) 2022 SEEKFREE ï¿½ï¿½É¿Æ¼ï¿½
 *
-* ±¾ÎÄ¼þÊÇ CYT4BB ¿ªÔ´¿âµÄÒ»²¿·Ö
+* ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ CYT4BB ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
 *
-* CYT4BB ¿ªÔ´¿â ÊÇÃâ·ÑÈí¼þ
-* Äú¿ÉÒÔ¸ù¾Ý×ÔÓÉÈí¼þ»ù½ð»á·¢²¼µÄ GPL£¨GNU General Public License£¬¼´ GNUÍ¨ÓÃ¹«¹²Ðí¿ÉÖ¤£©µÄÌõ¿î
-* ¼´ GPL µÄµÚ3°æ£¨¼´ GPL3.0£©»ò£¨ÄúÑ¡ÔñµÄ£©ÈÎºÎºóÀ´µÄ°æ±¾£¬ÖØÐÂ·¢²¼ºÍ/»òÐÞ¸ÄËü
+* CYT4BB ï¿½ï¿½Ô´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* ï¿½ï¿½ï¿½ï¿½ï¿½Ô¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á·¢ï¿½ï¿½ï¿½ï¿½ GPLï¿½ï¿½GNU General Public Licenseï¿½ï¿½ï¿½ï¿½ GNUÍ¨ï¿½Ã¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* ï¿½ï¿½ GPL ï¿½Äµï¿½3ï¿½æ£¨ï¿½ï¿½ GPL3.0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ä£ï¿½ï¿½ÎºÎºï¿½ï¿½ï¿½ï¿½Ä°æ±¾ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½
 *
-* ±¾¿ªÔ´¿âµÄ·¢²¼ÊÇÏ£ÍûËüÄÜ·¢»Ó×÷ÓÃ£¬µ«²¢Î´¶ÔÆä×÷ÈÎºÎµÄ±£Ö¤
-* ÉõÖÁÃ»ÓÐÒþº¬µÄÊÊÏúÐÔ»òÊÊºÏÌØ¶¨ÓÃÍ¾µÄ±£Ö¤
-* ¸ü¶àÏ¸½ÚÇë²Î¼û GPL
+* ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½Ü·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎºÎµÄ±ï¿½Ö¤
+* ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô»ï¿½ï¿½Êºï¿½ï¿½Ø¶ï¿½ï¿½ï¿½Í¾ï¿½Ä±ï¿½Ö¤
+* ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½Î¼ï¿½ GPL
 *
-* ÄúÓ¦¸ÃÔÚÊÕµ½±¾¿ªÔ´¿âµÄÍ¬Ê±ÊÕµ½Ò»·Ý GPL µÄ¸±±¾
-* Èç¹ûÃ»ÓÐ£¬Çë²ÎÔÄ<https://www.gnu.org/licenses/>
+* ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Í¬Ê±ï¿½Õµï¿½Ò»ï¿½ï¿½ GPL ï¿½Ä¸ï¿½ï¿½ï¿½
+* ï¿½ï¿½ï¿½Ã»ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<https://www.gnu.org/licenses/>
 *
-* ¶îÍâ×¢Ã÷£º
-* ±¾¿ªÔ´¿âÊ¹ÓÃ GPL3.0 ¿ªÔ´Ðí¿ÉÖ¤Ð­Òé ÒÔÉÏÐí¿ÉÉêÃ÷ÎªÒëÎÄ°æ±¾
-* Ðí¿ÉÉêÃ÷Ó¢ÎÄ°æÔÚ libraries/doc ÎÄ¼þ¼ÐÏÂµÄ GPL3_permission_statement.txt ÎÄ¼þÖÐ
-* Ðí¿ÉÖ¤¸±±¾ÔÚ libraries ÎÄ¼þ¼ÐÏÂ ¼´¸ÃÎÄ¼þ¼ÐÏÂµÄ LICENSE ÎÄ¼þ
-* »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌÐò µ«ÐÞ¸ÄÄÚÈÝÊ±±ØÐë±£ÁôÖð·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷£¨¼´±¾ÉùÃ÷£©
+* ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½
+* ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ê¹ï¿½ï¿½ GPL3.0 ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½Ö¤Ð­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Ä°æ±¾
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½Ä°ï¿½ï¿½ï¿½ libraries/doc ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Âµï¿½ GPL3_permission_statement.txt ï¿½Ä¼ï¿½ï¿½ï¿½
+* ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ libraries ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Âµï¿½ LICENSE ï¿½Ä¼ï¿½
+* ï¿½ï¿½Ó­ï¿½ï¿½Î»Ê¹ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ë±£ï¿½ï¿½ï¿½ï¿½É¿Æ¼ï¿½ï¿½Ä°ï¿½È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 *
-* ÎÄ¼þÃû³Æ          zf_driver_spi
-* ¹«Ë¾Ãû³Æ          ³É¶¼Öð·É¿Æ¼¼ÓÐÏÞ¹«Ë¾
-* °æ±¾ÐÅÏ¢          ²é¿´ libraries/doc ÎÄ¼þ¼ÐÄÚ version ÎÄ¼þ °æ±¾ËµÃ÷
-* ¿ª·¢»·¾³          IAR 9.40.1
-* ÊÊÓÃÆ½Ì¨          CYT4BB
-* µêÆÌÁ´½Ó          https://seekfree.taobao.com/
+* ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½          zf_driver_spi
+* ï¿½ï¿½Ë¾ï¿½ï¿½ï¿½ï¿½          ï¿½É¶ï¿½ï¿½ï¿½É¿Æ¼ï¿½ï¿½ï¿½ï¿½Þ¹ï¿½Ë¾
+* ï¿½æ±¾ï¿½ï¿½Ï¢          ï¿½é¿´ libraries/doc ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ version ï¿½Ä¼ï¿½ ï¿½æ±¾Ëµï¿½ï¿½
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½          IAR 9.40.1
+* ï¿½ï¿½ï¿½ï¿½Æ½Ì¨          CYT4BB
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½          https://seekfree.taobao.com/
 *
-* ÐÞ¸Ä¼ÇÂ¼
-* ÈÕÆÚ              ×÷Õß                ±¸×¢
+* ï¿½Þ¸Ä¼ï¿½Â¼
+* ï¿½ï¿½ï¿½ï¿½              ï¿½ï¿½ï¿½ï¿½                ï¿½ï¿½×¢
 * 2024-1-9       pudding            first version
-* 2024-3-6       pudding            ÐÞ¸´Óë´®¿ÚµÄÊ±ÖÓ³åÍ»ÎÊÌâ
+* 2024-3-6       pudding            ï¿½Þ¸ï¿½ï¿½ë´®ï¿½Úµï¿½Ê±ï¿½Ó³ï¿½Í»ï¿½ï¿½ï¿½ï¿½
 ********************************************************************************************************************/
 
 #include "scb/cy_scb_spi.h"
@@ -43,16 +43,16 @@
 #include "zf_driver_spi.h"
 
 
-#define SPI_FREQ       CY_INITIAL_TARGET_PERI_FREQ                             // ´®¿ÚÄ£¿éÊ±ÖÓ Ä¬ÈÏ80M
+#define SPI_FREQ       CY_INITIAL_TARGET_PERI_FREQ                             // ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ê±ï¿½ï¿½ Ä¬ï¿½ï¿½80M
 
 volatile stc_SCB_t*        spi_module[4] = {SCB7, SCB8, SCB9, SCB6};
 spi_cs_pin_enum             cs_pin_save[4];
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI»ñÈ¡Ê±ÖÓÒý½ÅºÅ
-// ²ÎÊýËµÃ÷       clk_pin     Ê±ÖÓÒý½Å ²ÎÕÕ zf_driver_spi.h ÄÚ spi_clk_pin_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_get_clk_pin(SPI0_CLK_P02_2);
-// ±¸×¢ÐÅÏ¢       ÄÚ²¿µ÷ÓÃ£¬ÓÃ»§ÎÞÐè¹ØÐÄ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPIï¿½ï¿½È¡Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       clk_pin     Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_clk_pin_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_get_clk_pin(SPI0_CLK_P02_2);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢       ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------------------------
 static gpio_pin_enum spi_get_clk_pin (spi_clk_pin_enum clk_pin)
 {
@@ -70,11 +70,11 @@ static gpio_pin_enum spi_get_clk_pin (spi_clk_pin_enum clk_pin)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI»ñÈ¡MOSIÒý½ÅºÅ
-// ²ÎÊýËµÃ÷       mosi_pin     Ê±ÖÓÒý½Å ²ÎÕÕ zf_driver_spi.h ÄÚ spi_mosi_pin_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_get_mosi_pin(SPI0_MOSI_P02_1);
-// ±¸×¢ÐÅÏ¢       ÄÚ²¿µ÷ÓÃ£¬ÓÃ»§ÎÞÐè¹ØÐÄ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPIï¿½ï¿½È¡MOSIï¿½ï¿½ï¿½Åºï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       mosi_pin     Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_mosi_pin_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_get_mosi_pin(SPI0_MOSI_P02_1);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢       ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------------------------
 static gpio_pin_enum spi_get_mosi_pin (spi_mosi_pin_enum mosi_pin)
 {
@@ -92,11 +92,11 @@ static gpio_pin_enum spi_get_mosi_pin (spi_mosi_pin_enum mosi_pin)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI»ñÈ¡MISOÒý½ÅºÅ
-// ²ÎÊýËµÃ÷       miso_pin     Ê±ÖÓÒý½Å ²ÎÕÕ zf_driver_spi.h ÄÚ spi_miso_pin_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_get_miso_pin(SPI0_MISO_P02_0);
-// ±¸×¢ÐÅÏ¢       ÄÚ²¿µ÷ÓÃ£¬ÓÃ»§ÎÞÐè¹ØÐÄ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPIï¿½ï¿½È¡MISOï¿½ï¿½ï¿½Åºï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       miso_pin     Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_miso_pin_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_get_miso_pin(SPI0_MISO_P02_0);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢       ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------------------------
 static gpio_pin_enum spi_get_miso_pin (spi_miso_pin_enum miso_pin)
 {
@@ -114,11 +114,11 @@ static gpio_pin_enum spi_get_miso_pin (spi_miso_pin_enum miso_pin)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI»ñÈ¡CSÒý½ÅºÅ
-// ²ÎÊýËµÃ÷       clk_pin     Ê±ÖÓÒý½Å ²ÎÕÕ zf_driver_spi.h ÄÚ spi_clk_pin_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_get_clk_pin(SPI0_CS0_P02_3);
-// ±¸×¢ÐÅÏ¢       ÄÚ²¿µ÷ÓÃ£¬ÓÃ»§ÎÞÐè¹ØÐÄ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPIï¿½ï¿½È¡CSï¿½ï¿½ï¿½Åºï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       clk_pin     Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_clk_pin_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_get_clk_pin(SPI0_CS0_P02_3);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢       ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------------------------
 static gpio_pin_enum spi_get_cs_pin (spi_cs_pin_enum cs_pin)
 {
@@ -138,11 +138,11 @@ static gpio_pin_enum spi_get_cs_pin (spi_cs_pin_enum cs_pin)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI»ñÈ¡Ê±ÖÓÒý½Å¸´ÓÃ¹ØÏµ
-// ²ÎÊýËµÃ÷       clk_pin     Ê±ÖÓÒý½Å ²ÎÕÕ zf_driver_spi.h ÄÚ spi_clk_pin_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_get_clk_pin(SPI0_CLK_P02_2);
-// ±¸×¢ÐÅÏ¢       ÄÚ²¿µ÷ÓÃ£¬ÓÃ»§ÎÞÐè¹ØÐÄ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPIï¿½ï¿½È¡Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½Ã¹ï¿½Ïµ
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       clk_pin     Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_clk_pin_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_get_clk_pin(SPI0_CLK_P02_2);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢       ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------------------------
 static en_hsiom_sel_t spi_get_clk_hsiom (spi_clk_pin_enum clk_pin)
 {
@@ -160,11 +160,11 @@ static en_hsiom_sel_t spi_get_clk_hsiom (spi_clk_pin_enum clk_pin)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI»ñÈ¡MOSIÒý½Å¸´ÓÃ¹ØÏµ
-// ²ÎÊýËµÃ÷       clk_pin     Ê±ÖÓÒý½Å ²ÎÕÕ zf_driver_spi.h ÄÚ spi_mosi_pin_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_get_mosi_pin(SPI0_MOSI_P02_1);
-// ±¸×¢ÐÅÏ¢       ÄÚ²¿µ÷ÓÃ£¬ÓÃ»§ÎÞÐè¹ØÐÄ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPIï¿½ï¿½È¡MOSIï¿½ï¿½ï¿½Å¸ï¿½ï¿½Ã¹ï¿½Ïµ
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       clk_pin     Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_mosi_pin_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_get_mosi_pin(SPI0_MOSI_P02_1);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢       ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------------------------
 static en_hsiom_sel_t spi_get_mosi_hsiom (spi_mosi_pin_enum mosi_pin)
 {
@@ -182,11 +182,11 @@ static en_hsiom_sel_t spi_get_mosi_hsiom (spi_mosi_pin_enum mosi_pin)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI»ñÈ¡MISOÒý½Å¸´ÓÃ¹ØÏµ
-// ²ÎÊýËµÃ÷       miso_pin     Ê±ÖÓÒý½Å ²ÎÕÕ zf_driver_spi.h ÄÚ spi_miso_pin_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_get_miso_pin(SPI0_MISO_P02_0);
-// ±¸×¢ÐÅÏ¢       ÄÚ²¿µ÷ÓÃ£¬ÓÃ»§ÎÞÐè¹ØÐÄ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPIï¿½ï¿½È¡MISOï¿½ï¿½ï¿½Å¸ï¿½ï¿½Ã¹ï¿½Ïµ
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       miso_pin     Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_miso_pin_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_get_miso_pin(SPI0_MISO_P02_0);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢       ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------------------------
 static en_hsiom_sel_t spi_get_miso_hsiom (spi_miso_pin_enum miso_pin)
 {
@@ -204,11 +204,11 @@ static en_hsiom_sel_t spi_get_miso_hsiom (spi_miso_pin_enum miso_pin)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI»ñÈ¡CSÒý½Å¸´ÓÃ¹ØÏµ
-// ²ÎÊýËµÃ÷       cs_pin     Ê±ÖÓÒý½Å ²ÎÕÕ zf_driver_spi.h ÄÚ spi_clk_pin_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_get_clk_pin(SPI0_CS0_P02_3);
-// ±¸×¢ÐÅÏ¢       ÄÚ²¿µ÷ÓÃ£¬ÓÃ»§ÎÞÐè¹ØÐÄ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPIï¿½ï¿½È¡CSï¿½ï¿½ï¿½Å¸ï¿½ï¿½Ã¹ï¿½Ïµ
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       cs_pin     Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_clk_pin_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_get_clk_pin(SPI0_CS0_P02_3);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢       ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------------------------
 static en_hsiom_sel_t spi_get_cs_hsiom (spi_cs_pin_enum cs_pin)
 {
@@ -228,12 +228,12 @@ static en_hsiom_sel_t spi_get_cs_hsiom (spi_cs_pin_enum cs_pin)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPIÅäÖÃ·¢ËÍ³¤¶È
-// ²ÎÊýËµÃ÷       spi_n     SPIÄ£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       length		ÐèÒªÅäÖÃµÄ³¤¶È ½öÖ§³Ö 8 16
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_get_clk_pin(SPI_0, 8);
-// ±¸×¢ÐÅÏ¢       ÄÚ²¿µ÷ÓÃ£¬ÓÃ»§ÎÞÐè¹ØÐÄ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPIï¿½ï¿½ï¿½Ã·ï¿½ï¿½Í³ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n     SPIÄ£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       length		ï¿½ï¿½Òªï¿½ï¿½ï¿½ÃµÄ³ï¿½ï¿½ï¿½ ï¿½ï¿½Ö§ï¿½ï¿½ 8 16
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_get_clk_pin(SPI_0, 8);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢       ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //-------------------------------------------------------------------------------------------------------------------
 static void switch_transition_length(spi_index_enum spi_n, uint8 length)
 {
@@ -260,88 +260,88 @@ static void switch_transition_length(spi_index_enum spi_n, uint8 length)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿ÚÐ´ 8bit Êý¾Ý
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       data            Êý¾Ý
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_write_8bit(SPI_0, 0x11);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿ï¿½Ð´ 8bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       data            ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_write_8bit(SPI_0, 0x11);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_write_8bit (spi_index_enum spi_n, const uint8 data)
 {
-    switch_transition_length(spi_n, 8);					        // ÇÐ»»Í¨ÐÅ³¤¶ÈÎª8Î»
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    switch_transition_length(spi_n, 8);					        // ï¿½Ð»ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª8Î»
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], data);                                // ·¢ËÍÊý¾Ý
-    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // »º³åÇøÂúÔòµÈ´ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], data);                                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }	
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿ÚÐ´ 8bit Êý×é
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       *data           Êý¾Ý´æ·Å»º³åÇø
-// ²ÎÊýËµÃ÷       len             »º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_write_8bit_array(SPI_0, data, 64);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿ï¿½Ð´ 8bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       *data           ï¿½ï¿½ï¿½Ý´ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_write_8bit_array(SPI_0, data, 64);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_write_8bit_array (spi_index_enum spi_n, const uint8 *data, uint32 len)
 {    
-    switch_transition_length(spi_n, 8);					        // ÇÐ»»Í¨ÐÅ³¤¶ÈÎª8Î»
+    switch_transition_length(spi_n, 8);					        // ï¿½Ð»ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª8Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
             gpio_low(cs_pin_save[spi_n]);
     } 
     
     do
     {
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], *data ++);                        // ·¢ËÍÊý¾Ý
-        while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // »º³åÇøÂúÔòµÈ´ý
-        len -= 1;						                // ·¢ËÍ³¤¶È×Ô¼õ	
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], *data ++);                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
+        len -= 1;						                // ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½	
     }while(len);
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)				        // ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)				        // ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿ÚÐ´ 16bit Êý¾Ý
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       data            Êý¾Ý
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_write_16bit(SPI_0, 0x1101);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿ï¿½Ð´ 16bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       data            ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_write_16bit(SPI_0, 0x1101);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_write_16bit (spi_index_enum spi_n, const uint16 data)
 {
-    switch_transition_length(spi_n, 16);				        // ÇÐ»»Í¨ÐÅ³¤¶ÈÎª16Î»
+    switch_transition_length(spi_n, 16);				        // ï¿½Ð»ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª16Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], data);                                // ·¢ËÍÊý¾Ý
-    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // »º³åÇøÂúÔòµÈ´ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], data);                                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }		
@@ -349,204 +349,204 @@ void spi_write_16bit (spi_index_enum spi_n, const uint16 data)
 
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿ÚÐ´ 16bit Êý×é
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       *data           Êý¾Ý´æ·Å»º³åÇø
-// ²ÎÊýËµÃ÷       len             »º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_write_16bit_array(SPI_0, data, 64);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿ï¿½Ð´ 16bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       *data           ï¿½ï¿½ï¿½Ý´ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_write_16bit_array(SPI_0, data, 64);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_write_16bit_array (spi_index_enum spi_n, const uint16 *data, uint32 len)
 {
-    switch_transition_length(spi_n, 16);					// ÇÐ»»Í¨ÐÅ³¤¶ÈÎª16Î»
+    switch_transition_length(spi_n, 16);					// ï¿½Ð»ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª16Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
             gpio_low(cs_pin_save[spi_n]);
     } 
     
     do
     {
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], *data ++);                        // ·¢ËÍÊý¾Ý
-        while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // »º³åÇøÂúÔòµÈ´ý
-        len -= 1;						                // ·¢ËÍ³¤¶È×Ô¼õ	
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], *data ++);                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
+        len -= 1;						                // ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½	
     }while(len);
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)				        // ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)				        // ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿ÚÏò´«¸ÐÆ÷µÄ¼Ä´æÆ÷Ð´ 8bit Êý¾Ý
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ²ÎÊýËµÃ÷       data            Êý¾Ý
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý        spi_write_8bit_register(SPI_0, 0x11, 0x01);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿ï¿½ï¿½ò´«¸ï¿½ï¿½ï¿½ï¿½Ä¼Ä´ï¿½ï¿½ï¿½Ð´ 8bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       data            ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½        spi_write_8bit_register(SPI_0, 0x11, 0x01);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_write_8bit_register (spi_index_enum spi_n, const uint8 register_name, const uint8 data)
 {
-    switch_transition_length(spi_n, 8);						// ÇÐ»»Í¨ÐÅ³¤¶ÈÎª8Î»
+    switch_transition_length(spi_n, 8);						// ï¿½Ð»ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª8Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
             gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                        // ·¢ËÍ¼Ä´æÆ÷µØÖ·
-    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // »º³åÇøÂúÔòµÈ´ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                        // ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
 
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], data);                                // ·¢ËÍÊý¾Ý
-    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // »º³åÇøÂúÔòµÈ´ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], data);                                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
             gpio_high(cs_pin_save[spi_n]);
     }	
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿ÚÏò´«¸ÐÆ÷µÄ¼Ä´æÆ÷Ð´ 8bit Êý×é
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ²ÎÊýËµÃ÷       *data           Êý¾Ý´æ·Å»º³åÇø
-// ²ÎÊýËµÃ÷       len             »º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_write_8bit_registers(SPI_0, 0x11, data, 32);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿ï¿½ï¿½ò´«¸ï¿½ï¿½ï¿½ï¿½Ä¼Ä´ï¿½ï¿½ï¿½Ð´ 8bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       *data           ï¿½ï¿½ï¿½Ý´ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_write_8bit_registers(SPI_0, 0x11, data, 32);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_write_8bit_registers (spi_index_enum spi_n, const uint8 register_name, const uint8 *data, uint32 len)
 {
-    switch_transition_length(spi_n, 8);					        // ÇÐ»»Í¨ÐÅ³¤¶ÈÎª8Î»
+    switch_transition_length(spi_n, 8);					        // ï¿½Ð»ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª8Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
             gpio_low(cs_pin_save[spi_n]);
     } 
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                        // ·¢ËÍ¼Ä´æÆ÷µØÖ·
-    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // »º³åÇøÂúÔòµÈ´ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                        // ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
     
     do
     {
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], *data ++);                        // ·¢ËÍÊý¾Ý
-        while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // »º³åÇøÂúÔòµÈ´ý
-        len -= 1;						                // ·¢ËÍ³¤¶È×Ô¼õ	
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], *data ++);                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
+        len -= 1;						                // ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½	
     }while(len);
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)				        // ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)				        // ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }	
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿ÚÏò´«¸ÐÆ÷µÄ¼Ä´æÆ÷Ð´ 16bit Êý¾Ý
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ²ÎÊýËµÃ÷       data            Êý¾Ý
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_write_16bit_register(SPI_0, 0x1011, 0x0101);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿ï¿½ï¿½ò´«¸ï¿½ï¿½ï¿½ï¿½Ä¼Ä´ï¿½ï¿½ï¿½Ð´ 16bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       data            ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_write_16bit_register(SPI_0, 0x1011, 0x0101);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_write_16bit_register (spi_index_enum spi_n, const uint16 register_name, const uint16 data)
 {
-    switch_transition_length(spi_n, 16);				        // ÇÐ»»Í¨ÐÅ³¤¶ÈÎª16Î»
+    switch_transition_length(spi_n, 16);				        // ï¿½Ð»ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª16Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
             gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                        // ·¢ËÍ¼Ä´æÆ÷µØÖ·
-    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // »º³åÇøÂúÔòµÈ´ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                        // ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
 
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], data);                                // ·¢ËÍÊý¾Ý
-    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // »º³åÇøÂúÔòµÈ´ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], data);                                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
             gpio_high(cs_pin_save[spi_n]);
     }	
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿ÚÏò´«¸ÐÆ÷µÄ¼Ä´æÆ÷Ð´ 16bit Êý×é
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ²ÎÊýËµÃ÷       *data           Êý¾Ý´æ·Å»º³åÇø
-// ²ÎÊýËµÃ÷       len             »º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_write_16bit_registers(SPI_0, 0x1011, data, 32);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿ï¿½ï¿½ò´«¸ï¿½ï¿½ï¿½ï¿½Ä¼Ä´ï¿½ï¿½ï¿½Ð´ 16bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       *data           ï¿½ï¿½ï¿½Ý´ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_write_16bit_registers(SPI_0, 0x1011, data, 32);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_write_16bit_registers (spi_index_enum spi_n, const uint16 register_name, const uint16 *data, uint32 len)
 {
-    switch_transition_length(spi_n, 16);					// ÇÐ»»Í¨ÐÅ³¤¶ÈÎª16Î»
+    switch_transition_length(spi_n, 16);					// ï¿½Ð»ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª16Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
             gpio_low(cs_pin_save[spi_n]);
     } 
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                        // ·¢ËÍ¼Ä´æÆ÷µØÖ·
-    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // »º³åÇøÂúÔòµÈ´ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                        // ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));           // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
     
     do
     {
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], *data ++);                        // ·¢ËÍÊý¾Ý
-        while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // »º³åÇøÂúÔòµÈ´ý
-        len -= 1;						                // ·¢ËÍ³¤¶È×Ô¼õ	
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], *data ++);                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_GetFifoSize(spi_module[spi_n]) == Cy_SCB_GetNumInTxFifo(spi_module[spi_n]));       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½
+        len -= 1;						                // ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½	
     }while(len);
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)				        // ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)				        // ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿Ú¶Á 8bit Êý¾Ý
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ·µ»Ø²ÎÊý       uint8           Êý¾Ý
-// Ê¹ÓÃÊ¾Àý       spi_read_8bit(SPI_0);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿Ú¶ï¿½ 8bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       uint8           ï¿½ï¿½ï¿½ï¿½
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_read_8bit(SPI_0);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 uint8 spi_read_8bit (spi_index_enum spi_n)
 {
     uint8 read_data = 0;
     
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    switch_transition_length(spi_n, 8);						// ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª8Î»
+    switch_transition_length(spi_n, 8);						// ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª8Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                                   // ·¢ËÍ¿ÕÊý¾Ý
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
-    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // µÈ´ý½ÓÊÕµ½Êý¾Ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                                   // ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ï¿½ï¿½
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½
     
-    read_data = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);		// ¶ÁÈ¡Êý¾Ý
+    read_data = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);		// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }	
@@ -555,66 +555,66 @@ uint8 spi_read_8bit (spi_index_enum spi_n)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿Ú¶Á 8bit Êý×é
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       *data           Êý¾Ý´æ·Å»º³åÇø
-// ²ÎÊýËµÃ÷       len             ·¢ËÍ»º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_read_8bit_array(SPI_0, data, 64);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿Ú¶ï¿½ 8bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       *data           ï¿½ï¿½ï¿½Ý´ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_read_8bit_array(SPI_0, data, 64);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_read_8bit_array (spi_index_enum spi_n, uint8 *data, uint32 len)
 {
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    switch_transition_length(spi_n, 8);						// ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª8Î»
+    switch_transition_length(spi_n, 8);						// ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª8Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
     do{
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                               // ·¢ËÍ¿ÕÊý¾Ý
-        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // µÈ´ýÊý¾Ý·¢ËÍÍê³É
-        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// µÈ´ý½ÓÊÕµ½Êý¾Ý
-        *data ++ = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ¶ÁÈ¡Êý¾Ý
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                               // ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½
+        *data ++ = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
         len -= 1;
     }while(len);
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿Ú¶Á 16bit Êý¾Ý
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ·µ»Ø²ÎÊý       uint16          Êý¾Ý
-// Ê¹ÓÃÊ¾Àý       spi_read_16bit(SPI_0);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿Ú¶ï¿½ 16bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       uint16          ï¿½ï¿½ï¿½ï¿½
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_read_16bit(SPI_0);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 uint16 spi_read_16bit (spi_index_enum spi_n)
 {
     uint16 read_data = 0;
     
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    switch_transition_length(spi_n, 16);					// ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª16Î»
+    switch_transition_length(spi_n, 16);					// ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª16Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                                   // ·¢ËÍ¿ÕÊý¾Ý
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
-    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // µÈ´ý½ÓÊÕµ½Êý¾Ý
-    read_data = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);		// ¶ÁÈ¡Êý¾Ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                                   // ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ï¿½ï¿½
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½
+    read_data = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);		// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }	
@@ -623,34 +623,34 @@ uint16 spi_read_16bit (spi_index_enum spi_n)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿Ú¶Á 16bit Êý×é
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       *data           Êý¾Ý´æ·Å»º³åÇø
-// ²ÎÊýËµÃ÷       len             ·¢ËÍ»º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_read_16bit_array(SPI_0, data, 64);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿Ú¶ï¿½ 16bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       *data           ï¿½ï¿½ï¿½Ý´ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_read_16bit_array(SPI_0, data, 64);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_read_16bit_array (spi_index_enum spi_n, uint16 *data, uint32 len)
 {
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    switch_transition_length(spi_n, 16);					// ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª16Î»
+    switch_transition_length(spi_n, 16);					// ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª16Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
     do{
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                               // ·¢ËÍ¿ÕÊý¾Ý
-        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // µÈ´ýÊý¾Ý·¢ËÍÍê³É
-        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// µÈ´ý½ÓÊÕµ½Êý¾Ý
-        *data ++ = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ¶ÁÈ¡Êý¾Ý
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                               // ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½
+        *data ++ = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
         len -= 1;
     }while(len);
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }	
@@ -658,37 +658,37 @@ void spi_read_16bit_array (spi_index_enum spi_n, uint16 *data, uint32 len)
 
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿Ú´Ó´«¸ÐÆ÷µÄ¼Ä´æÆ÷¶Á 8bit Êý¾Ý
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ·µ»Ø²ÎÊý       uint8           Êý¾Ý
-// Ê¹ÓÃÊ¾Àý       spi_read_8bit_register(SPI_0, 0x11);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿Ú´Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ 8bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       uint8           ï¿½ï¿½ï¿½ï¿½
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_read_8bit_register(SPI_0, 0x11);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 uint8 spi_read_8bit_register (spi_index_enum spi_n, const uint8 register_name)
 {
     uint8 read_data = 0;
     
-    switch_transition_length(spi_n, 8);						// ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª8Î»
+    switch_transition_length(spi_n, 8);						// ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª8Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                       // ·¢ËÍ¼Ä´æÆ÷µØÖ·
-    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // µÈ´ý½ÓÊÕµ½Êý¾Ý    
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                       // ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½    
     
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                                   // ·¢ËÍ¿ÕÊý¾Ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                                   // ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // µÈ´ý½ÓÊÕµ½Êý¾Ý
-    read_data = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);		// ¶ÁÈ¡Êý¾Ý
+    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½
+    read_data = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);		// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }	
@@ -697,79 +697,79 @@ uint8 spi_read_8bit_register (spi_index_enum spi_n, const uint8 register_name)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿Ú´Ó´«¸ÐÆ÷µÄ¼Ä´æÆ÷¶Á 8bit Êý×é
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ²ÎÊýËµÃ÷       *data           Êý¾Ý´æ·Å»º³åÇø
-// ²ÎÊýËµÃ÷       len             ·¢ËÍ»º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_read_8bit_registers(SPI_0, 0x11, data, 32);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿Ú´Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ 8bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       *data           ï¿½ï¿½ï¿½Ý´ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_read_8bit_registers(SPI_0, 0x11, data, 32);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_read_8bit_registers (spi_index_enum spi_n, const uint8 register_name, uint8 *data, uint32 len)
 {
-    switch_transition_length(spi_n, 8);						// ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª8Î»
+    switch_transition_length(spi_n, 8);						// ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª8Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                       // ·¢ËÍ¼Ä´æÆ÷µØÖ·
-    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // µÈ´ý½ÓÊÕµ½Êý¾Ý  
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                       // ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½  
     
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
     do{
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                               // ·¢ËÍ¿ÕÊý¾Ý
-        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // µÈ´ýÊý¾Ý·¢ËÍÍê³É
-        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// µÈ´ý½ÓÊÕµ½Êý¾Ý
-        *data ++ = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ¶ÁÈ¡Êý¾Ý
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                               // ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½
+        *data ++ = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
         len -= 1;
     }while(len);
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿Ú´Ó´«¸ÐÆ÷µÄ¼Ä´æÆ÷¶Á 16bit Êý¾Ý
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ·µ»Ø²ÎÊý       uint16          Êý¾Ý
-// Ê¹ÓÃÊ¾Àý       spi_read_16bit_register(SPI_0, 0x1011);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿Ú´Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ 16bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       uint16          ï¿½ï¿½ï¿½ï¿½
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_read_16bit_register(SPI_0, 0x1011);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 uint16 spi_read_16bit_register (spi_index_enum spi_n, const uint16 register_name)
 {
-    uint8 read_data = 0;
+    uint16 read_data = 0;
     
-    switch_transition_length(spi_n, 16);					// ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª16Î»
+    switch_transition_length(spi_n, 16);					// ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª16Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                       // ·¢ËÍ¼Ä´æÆ÷µØÖ·
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                       // ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // µÈ´ý½ÓÊÕµ½Êý¾Ý    
+    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½    
     
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                                   // ·¢ËÍ¿ÕÊý¾Ý
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                                   // ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // µÈ´ý½ÓÊÕµ½Êý¾Ý
+    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½
     
-    read_data = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);		// ¶ÁÈ¡Êý¾Ý
+    read_data = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);		// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }	
@@ -779,126 +779,126 @@ uint16 spi_read_16bit_register (spi_index_enum spi_n, const uint16 register_name
 
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI ½Ó¿Ú´Ó´«¸ÐÆ÷µÄ¼Ä´æÆ÷¶Á 16bit Êý×é
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       register_name   ¼Ä´æÆ÷µØÖ·
-// ²ÎÊýËµÃ÷       *data           Êý¾Ý´æ·Å»º³åÇø
-// ²ÎÊýËµÃ÷       len             ·¢ËÍ»º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_read_16bit_registers(SPI_0, 0x1101, data, 32);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI ï¿½Ó¿Ú´Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ 16bit ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       register_name   ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       *data           ï¿½ï¿½ï¿½Ý´ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_read_16bit_registers(SPI_0, 0x1101, data, 32);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_read_16bit_registers (spi_index_enum spi_n, const uint16 register_name, uint16 *data, uint32 len)
 {
-    switch_transition_length(spi_n, 16);					// ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª16Î»
+    switch_transition_length(spi_n, 16);					// ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª16Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                       // ·¢ËÍ¼Ä´æÆ÷µØÖ·
-    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // µÈ´ýÊý¾Ý·¢ËÍÍê³É
-    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // µÈ´ý½ÓÊÕµ½Êý¾Ý  
+    Cy_SCB_WriteTxFifo(spi_module[spi_n], register_name);                       // ï¿½ï¿½ï¿½Í¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+    while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                         // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		        // ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½  
     
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
     do{
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                               // ·¢ËÍ¿ÕÊý¾Ý
-        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // µÈ´ýÊý¾Ý·¢ËÍÍê³É
-        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// µÈ´ý½ÓÊÕµ½Êý¾Ý
-        *data ++ = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ¶ÁÈ¡Êý¾Ý
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], 0);                               // ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½
+        *data ++ = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
         len -= 1;
     }while(len);
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI 8bit Êý¾Ý´«Êä ·¢ËÍÓë½ÓÊÕÊý¾ÝÊÇÍ¬Ê±½øÐÐµÄ
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       write_buffer    ·¢ËÍµÄÊý¾Ý»º³åÇøµØÖ·
-// ²ÎÊýËµÃ÷       read_buffer     ·¢ËÍÊý¾ÝÊ±½ÓÊÕµ½µÄÊý¾ÝµÄ´æ´¢µØÖ·(²»ÐèÒª½ÓÊÕÔò´« NULL)
-// ²ÎÊýËµÃ÷       len             »º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_transfer_8bit(SPI_0, buf, buf, 1);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI 8bit ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ê±ï¿½ï¿½ï¿½Ðµï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       write_buffer    ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       read_buffer     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÄ´æ´¢ï¿½ï¿½Ö·(ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ NULL)
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_transfer_8bit(SPI_0, buf, buf, 1);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_transfer_8bit (spi_index_enum spi_n, const uint8 *write_buffer, uint8 *read_buffer, uint32 len)
 {
-    switch_transition_length(spi_n, 8);						// ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª8Î»
+    switch_transition_length(spi_n, 8);						// ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª8Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
     do{
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], *write_buffer ++);                // ·¢ËÍÊý¾Ý
-        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // µÈ´ýÊý¾Ý·¢ËÍÍê³É
-        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// µÈ´ý½ÓÊÕµ½Êý¾Ý  
-        *read_buffer ++ = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ¶ÁÈ¡Êý¾Ý
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], *write_buffer ++);                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½  
+        *read_buffer ++ = (uint8)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);	// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
         len -= 1;
     }while(len);
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é       SPI 16bit Êý¾Ý´«Êä ·¢ËÍÓë½ÓÊÕÊý¾ÝÊÇÍ¬Ê±½øÐÐµÄ
-// ²ÎÊýËµÃ÷       spi_n           SPI Ä£¿éºÅ ²ÎÕÕ zf_driver_spi.h ÄÚ spi_index_enum Ã¶¾ÙÌå¶¨Òå
-// ²ÎÊýËµÃ÷       write_buffer    ·¢ËÍµÄÊý¾Ý»º³åÇøµØÖ·
-// ²ÎÊýËµÃ÷       read_buffer     ·¢ËÍÊý¾ÝÊ±½ÓÊÕµ½µÄÊý¾ÝµÄ´æ´¢µØÖ·(²»ÐèÒª½ÓÊÕÔò´« NULL)
-// ²ÎÊýËµÃ÷       len             »º³åÇø³¤¶È
-// ·µ»Ø²ÎÊý       void
-// Ê¹ÓÃÊ¾Àý       spi_transfer_16bit(SPI_0, buf, buf, 1);
-// ±¸×¢ÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       SPI 16bit ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ê±ï¿½ï¿½ï¿½Ðµï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       spi_n           SPI Ä£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ zf_driver_spi.h ï¿½ï¿½ spi_index_enum Ã¶ï¿½ï¿½ï¿½å¶¨ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       write_buffer    ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       read_buffer     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÄ´æ´¢ï¿½ï¿½Ö·(ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ NULL)
+// ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½       len             ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½       void
+// Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½       spi_transfer_16bit(SPI_0, buf, buf, 1);
+// ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_transfer_16bit (spi_index_enum spi_n, const uint16 *write_buffer, uint16 *read_buffer, uint32 len)
 {
-    switch_transition_length(spi_n, 16);				        // ÇÐ»»µ¥´ÎÍ¨ÐÅ³¤¶ÈÎª16Î»
+    switch_transition_length(spi_n, 16);				        // ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Å³ï¿½ï¿½ï¿½Îª16Î»
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­µÍCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_low(cs_pin_save[spi_n]);
     }
     
-    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// Çå³ý½ÓÊÕ»º³åÇø
+    Cy_SCB_SPI_ClearRxFifo(spi_module[spi_n]);					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
     
     do{
-        Cy_SCB_WriteTxFifo(spi_module[spi_n], *write_buffer ++);                // ·¢ËÍÊý¾Ý
-        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // µÈ´ýÊý¾Ý·¢ËÍÍê³É
-        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// µÈ´ý½ÓÊÕµ½Êý¾Ý  
-        *read_buffer ++ = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);// ¶ÁÈ¡Êý¾Ý
+        Cy_SCB_WriteTxFifo(spi_module[spi_n], *write_buffer ++);                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_IsTxComplete(spi_module[spi_n]) == 0);                     // ï¿½È´ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        while(Cy_SCB_SPI_GetNumInRxFifo(spi_module[spi_n]) == 0);		// ï¿½È´ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½  
+        *read_buffer ++ = (uint16)(spi_module[spi_n]->unRX_FIFO_RD.u32Register);// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
         len -= 1;
     }while(len);
     
-    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ÈôCS²»Îª¿Õ ÔòÀ­¸ßCS
+    if(cs_pin_save[spi_n] != SPI_CS_NULL)					// ï¿½ï¿½CSï¿½ï¿½Îªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CS
     {
         gpio_high(cs_pin_save[spi_n]);
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-//  º¯Êý¼ò½é      SPI³õÊ¼»¯
-//  ²ÎÊýËµÃ÷      spi_n           Ñ¡ÔñSPIÄ£¿é(SPI_0-SPI_2)
-//  ²ÎÊýËµÃ÷      mode            SPIÄ£Ê½ 0£ºCPOL=0 CPHA=0    1£ºCPOL=0 CPHA=1   2£ºCPOL=1 CPHA=0   3£ºCPOL=1 CPHA=1  // ¾ßÌåÏ¸½Ú¿É×ÔÐÐ²éÔÄ×ÊÁÏ
-//  ²ÎÊýËµÃ÷      baud            ÉèÖÃSPIµÄ²¨ÌØÂÊ
-//  ²ÎÊýËµÃ÷      cs_pin          Ñ¡ÔñSPIÆ¬Ñ¡Òý½Å
-//  ²ÎÊýËµÃ÷      sck_pin         Ñ¡ÔñSPIÊ±ÖÓÒý½Å
-//  ²ÎÊýËµÃ÷      mosi_pin        Ñ¡ÔñSPI MOSIÒý½Å
-//  ²ÎÊýËµÃ÷      miso_pin        Ñ¡ÔñSPI MISOÒý½Å
-//  ·µ»Ø²ÎÊý      void
-//  Ê¹ÓÃÊ¾Àý      spi_init(SPI_0, SPI_MODE0, 1*1000*1000, SPI0_CLK_P2_2, SPI0_MOSI_P2_1, SPI0_MISO_P2_0, SPI0_CS0_P2_3); // Ó²¼þSPI³õÊ¼»¯  Ä£Ê½0 ²¨ÌØÂÊÎª1Mhz
-//  ±¸×¢ÐÅÏ¢
+//  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½      SPIï¿½ï¿½Ê¼ï¿½ï¿½
+//  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½      spi_n           Ñ¡ï¿½ï¿½SPIÄ£ï¿½ï¿½(SPI_0-SPI_2)
+//  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½      mode            SPIÄ£Ê½ 0ï¿½ï¿½CPOL=0 CPHA=0    1ï¿½ï¿½CPOL=0 CPHA=1   2ï¿½ï¿½CPOL=1 CPHA=0   3ï¿½ï¿½CPOL=1 CPHA=1  // ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½      baud            ï¿½ï¿½ï¿½ï¿½SPIï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½
+//  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½      cs_pin          Ñ¡ï¿½ï¿½SPIÆ¬Ñ¡ï¿½ï¿½ï¿½ï¿½
+//  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½      sck_pin         Ñ¡ï¿½ï¿½SPIÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½      mosi_pin        Ñ¡ï¿½ï¿½SPI MOSIï¿½ï¿½ï¿½ï¿½
+//  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½      miso_pin        Ñ¡ï¿½ï¿½SPI MISOï¿½ï¿½ï¿½ï¿½
+//  ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½      void
+//  Ê¹ï¿½ï¿½Ê¾ï¿½ï¿½      spi_init(SPI_0, SPI_MODE0, 1*1000*1000, SPI0_CLK_P2_2, SPI0_MOSI_P2_1, SPI0_MISO_P2_0, SPI0_CS0_P2_3); // Ó²ï¿½ï¿½SPIï¿½ï¿½Ê¼ï¿½ï¿½  Ä£Ê½0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª1Mhz
+//  ï¿½ï¿½×¢ï¿½ï¿½Ï¢
 //-------------------------------------------------------------------------------------------------------------------
 void spi_init (spi_index_enum spi_n, spi_mode_enum mode, uint32 baud, spi_clk_pin_enum clk_pin, spi_mosi_pin_enum mosi_pin, spi_miso_pin_enum miso_pin, spi_cs_pin_enum cs_pin)
 {
@@ -908,7 +908,7 @@ void spi_init (spi_index_enum spi_n, spi_mode_enum mode, uint32 baud, spi_clk_pi
     cy_stc_gpio_pin_config_t    spi_pin_cfg                     = {0};
     cy_stc_scb_spi_config_t     spi_config                      = {0};
     
-    // ÐÑÐÑ£¬Ä£¿éºÅºÍ¶Ë¿Ú¶¼²»¶ÔÓ¦ÔõÃ´ÄÜ³õÊ¼»¯ÄØ£¿
+    // ï¿½ï¿½ï¿½Ñ£ï¿½Ä£ï¿½ï¿½ÅºÍ¶Ë¿Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Ã´ï¿½Ü³ï¿½Ê¼ï¿½ï¿½ï¿½Ø£ï¿½
     zf_assert((uint8)spi_n == (uint8)clk_pin ? 1 : 0);
     zf_assert((uint8)clk_pin == (uint8)mosi_pin ? 1 : 0);
 
